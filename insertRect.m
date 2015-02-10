@@ -22,7 +22,7 @@ I(box(:, 4) : box(:, 4) + lwid - 1, box(:, 1) : box(:, 3), :) = ...
   repmat(col, lwid, box(:, 3) - box(:, 1) + 1);
 
 % a messy fix in case the above leads to a changed image size
-I = imresize(I, [size(origI, 1) size(origI, 2)]);
+I = I(1:size(origI, 1), 1:size(origI, 2), :);
 
 if dim
   I(1 : box(:, 2), :, :) = uint8(origI(1 : box(:, 2), :, :) .* 0.5);
