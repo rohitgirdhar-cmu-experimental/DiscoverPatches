@@ -33,13 +33,12 @@ def main():
 #          selboxes = []
           selected_imid = []
           for match in matches[0 : 30]:
-            score_for_this_pos = 1.0 / (1.2 ** pos)
-            total_possible_score += score_for_this_pos
+            score_for_this_pos = 1.0 / (1.02 ** pos)
             idx, score = match.split(':')
             idx = int(idx)
             score = float(score)
 #            box = getBox(idx, imgslist)
-            if score < 0.8:
+            if score < 0.7:
               break
             cls,imid,featid = getClassImgId(idx, imgslist)
             if imid == i:
@@ -47,14 +46,15 @@ def main():
                        # usually ends up giving me perturbations of the same patch
 #            if selboxes and max(computeOverlaps(selboxes, (imid, box))) > 0.8: # too expensive!!!
 #              continue # A close by box from this image has already been selected
-            if imid in selected_imid:
+            if imid in selected_imid: # no points for matching to another patch in same image
               continue
             if cls == basecls:
-              hits += score_for_this_pos
+              hits += score_for_this_pos * score # also depend on how good the match is
               selected_imid.append(imid)
 #              selboxes.append((imid, box))
             pos += 1
-          hitratio = hits / total_possible_score
+            total_possible_score += score_for_this_pos
+          hitratio = hits / (total_possible_score + 0.000001)
         outfile.write('%f\n' % hitratio)
 
 def getClassImgId(el, lst):

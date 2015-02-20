@@ -5,6 +5,7 @@ boxesdir = '/srv2/rgirdhar/Work/Datasets/processed/0001_PALn1KDistractor/selsear
 imgslistfile = '/srv2/rgirdhar/Work/Datasets/processed/0001_PALn1KDistractor/ImgsList.txt';
 imgsdir = '/srv2/rgirdhar/Work/Datasets/processed/0001_PALn1KDistractor/corpus';
 matchesdir = '/srv2/rgirdhar/Work/Datasets/processed/0001_PALn1KDistractor/matches';
+detail = 0; % = 1 if want to store all the matching images too
 
 f = fopen(imgslistfile);
 imgslist = textscan(f, '%s');
@@ -20,26 +21,33 @@ for i = 1 : 2 : 205
   boxes = boxes(order(1:100), :);
 %  boxes = esvm_nms(boxes, 0.5);
   I = imread(fullfile(imgsdir, imgslist{i}));
-  for j = 1 : min(10, size(boxes, 1))
-    if scores(j) < 0.25
+  summaryI = I;
+  unix(['mkdir -p ' fullfile(visdir, num2str(i))]);
+  for j = 1 : min(20, size(boxes, 1))
+    if scores(j) < 0.2
       break
     end
     J = insertRect(I, boxes(j, :));
-    line = getLine(fullfile(matchesdir, [num2str(i) '.txt']), order(j));
-    matches = cellfun(@(x) strsplit(x, ':'), strsplit(line, ' '), 'UniformOutput', false);
-    marked = {};
-    for m = 1 : numel(matches)
-      mt = matches{m};
-      marked{m} = getMarkedImg(mt{1}, imgsdir, imgslist, boxesdir);
-    end
+    summaryI = insertRect(summaryI, boxes(j, :));
     thisoutdir = fullfile(visdir, num2str(i), num2str(j));
-    unix(['mkdir -p ' thisoutdir]);
-    imwrite(I, fullfile(thisoutdir, 'q.jpg'));
-    for m = 1 : numel(matches)
-      imwrite(marked{m}, fullfile(thisoutdir, [num2str(m) '.jpg']));
+    if detail
+      line = getLine(fullfile(matchesdir, [num2str(i) '.txt']), order(j));
+      matches = cellfun(@(x) strsplit(x, ':'), strsplit(line, ' '), 'UniformOutput', false);
+      marked = {};
+      for m = 1 : numel(matches)
+        mt = matches{m};
+        marked{m} = getMarkedImg(mt{1}, imgsdir, imgslist, boxesdir);
+      end
+      unix(['mkdir -p ' thisoutdir]);
+      imwrite(smallImg(J), fullfile(thisoutdir, 'q.jpg'));
+      for m = 1 : numel(matches)
+        imwrite(smallImg(marked{m}), fullfile(thisoutdir, [num2str(m) '.jpg']));
+      end
     end
     fprintf('Done for %d:%d\n', i, j);
+    fflush(stdout);
   end
+  imwrite(smallImg(summaryI), fullfile(visdir, num2str(i), 'summary.jpg'));
 end
 
 function out = getLine(fpath, lno)
@@ -58,4 +66,7 @@ box = strsplit(line, ',');
 box = cellfun(@(x) str2num(x), box);
 box = box(:, [2 1 4 3]);
 out = insertRect(I, box);
+
+function I = smallImg(I)
+%I = imresize(I, [512, NaN]); % need newer octave.. too hard to compile! :(
 
