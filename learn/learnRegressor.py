@@ -1,4 +1,4 @@
-from sklearn import preprocessing, svm
+from sklearn import preprocessing, svm, linear_model
 import numpy as np
 import os, pickle
 import pdb
@@ -7,23 +7,36 @@ featdir = '/home/rgirdhar/data/Work/Datasets/processed/0001_PALn1KDistractor/fea
 imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0001_PALn1KDistractor/ImgsList.txt'
 trainlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0001_PALn1KDistractor/split/TestList.txt'
 scoresdir = '/home/rgirdhar/data/Work/Datasets/processed/0001_PALn1KDistractor/matches_scores'
-cachedir = '/home/rgirdhar/data/Work/Datasets/processed/0001_PALn1KDistractor/learnGoodPatches/scratch'
+cachedir = '/home/rgirdhar/data/Work/Datasets/processed/0001_PALn1KDistractor/learn_good_patches/scratch'
 RAND_SEL = 800 # randomly select these many from each image
 
 def main():
   ## read the data
   data, labels = readData()
-#  data = data[np.arange(2000)]
-#  labels = labels[np.arange(2000)]
-  data = preprocessing.scale(data, axis=0) # each dimension
-
+  origData = data
+  origLabels = labels
   print('Read data')
-  svr = svm.SVR(kernel='linear', verbose=1, max_iter=10000)
-  model = svr.fit(data, np.ravel(labels))
-  pickle.dump(model, open(os.path.join(cachedir, 'models/', 'svr_linear.pkl'), 'wb'))
-  y = model.predict(data)
-  print min(y), max(y)
+  modelcache = os.path.join(cachedir, 'models/', 'linear_ridge.pkl')
+  print modelcache
+  if os.path.exists(modelcache):
+    model = pickle.load(open(modelcache, 'rb'))
+  else:
+  #  data = data[np.arange(2000)]
+  #  labels = labels[np.arange(2000)]
+    data = preprocessing.scale(data, axis=0) # each dimension
+    print ('Scaled the data')
 
+    #svr = svm.SVR(kernel='rbf', verbose=1, max_iter=10000)
+    #lr = linear_model.LinearRegression()
+    lr = linear_model.Ridge(alpha = 0.5)
+    #model = svr.fit(data, np.ravel(labels))
+    #model = svr.fit(data, np.ravel(labels), n_jobs=12)
+    model = lr.fit(data, np.ravel(labels))
+    pickle.dump(model, open(modelcache, 'wb'))
+  y = model.predict(origData)
+  testset = np.random.choice(np.arange(np.shape(labels)[0]), 10000)
+  pdb.set_trace()
+  print model.score(origData[testset], origLabels[testset])
 
 def readData():
   cachepath = os.path.join(cachedir, 'data.npz')
