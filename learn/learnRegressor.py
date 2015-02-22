@@ -23,7 +23,9 @@ def main():
   else:
   #  data = data[np.arange(2000)]
   #  labels = labels[np.arange(2000)]
-    data = preprocessing.scale(data, axis=0) # each dimension
+    scaler = preprocessing.StandardScaler().fit(data)
+    data = scaler.transform(data, axis=0) # each dimension
+    pickle.dump(scaler, open(os.path.join(cachedir, 'std_scaler.pkl'), 'wb'))
     print ('Scaled the data')
 
     #svr = svm.SVR(kernel='rbf', verbose=1, max_iter=10000)
