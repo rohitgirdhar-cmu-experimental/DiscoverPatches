@@ -1,18 +1,23 @@
 function visualizeTopScorers()
-scoresdir = '/srv2/rgirdhar/Work/Datasets/processed/0001_PALn1KDistractor/matches_scores';
-visdir = '/srv2/rgirdhar/Work/Datasets/processed/0001_PALn1KDistractor/matches_visualization_temp';
-boxesdir = '/srv2/rgirdhar/Work/Datasets/processed/0001_PALn1KDistractor/selsearch_boxes';
-imgslistfile = '/srv2/rgirdhar/Work/Datasets/processed/0001_PALn1KDistractor/ImgsList.txt';
-imgsdir = '/srv2/rgirdhar/Work/Datasets/processed/0001_PALn1KDistractor/corpus';
-matchesdir = '/srv2/rgirdhar/Work/Datasets/processed/0001_PALn1KDistractor/matches';
+scoresdir = '/srv2/rgirdhar/Work/Datasets/processed/0004_PALn1KHayesDistractor/matches_scores';
+%scoresdir = '/srv2/rgirdhar/Work/Datasets/processed/0001_PALn1KDistractor/query_scores';
+visdir = '/srv2/rgirdhar/Work/Datasets/processed/0004_PALn1KHayesDistractor/matches_visualization';
+%visdir = '/srv2/rgirdhar/Work/Datasets/processed/0001_PALn1KDistractor/query_visualization_temp';
+boxesdir = '/srv2/rgirdhar/Work/Datasets/processed/0004_PALn1KHayesDistractor/selsearch_boxes';
+imgslistfile = '/srv2/rgirdhar/Work/Datasets/processed/0004_PALn1KHayesDistractor/ImgsList.txt';
+imgsdir = '/srv2/rgirdhar/Work/Datasets/processed/0004_PALn1KHayesDistractor/corpus';
+matchesdir = '/srv2/rgirdhar/Work/Datasets/processed/0004_PALn1KHayesDistractor/matches';
+ST = 1;
 detail = 0; % = 1 if want to store all the matching images too
+detaillist = 11:40;
+PRINTN = 30;
 
 f = fopen(imgslistfile);
 imgslist = textscan(f, '%s');
 imgslist = imgslist{1};
 fclose(f);
 
-for i = 1 : 2 : 205
+for i = ST : 1 : 237
   scores = dlmread(fullfile(scoresdir, [num2str(i) '.txt']));
   boxes = dlmread(fullfile(boxesdir, [num2str(i) '.txt']), ',');
   i
@@ -30,17 +35,20 @@ for i = 1 : 2 : 205
     J = insertRect(I, boxes(j, :));
     summaryI = insertRect(summaryI, boxes(j, :));
     thisoutdir = fullfile(visdir, num2str(i), num2str(j));
-    if detail
+    if detail || (exist('detaillist', 'var') && any(detaillist == i))
+      fprintf('Score: %f\n', scores(j))
+      disp('Saving detail');
+      fflush(stdout);
       line = getLine(fullfile(matchesdir, [num2str(i) '.txt']), order(j));
       matches = cellfun(@(x) strsplit(x, ':'), strsplit(line, ' '), 'UniformOutput', false);
       marked = {};
-      for m = 1 : numel(matches)
+      for m = 1 : min(PRINTN, numel(matches))
         mt = matches{m};
         marked{m} = getMarkedImg(mt{1}, imgsdir, imgslist, boxesdir);
       end
       unix(['mkdir -p ' thisoutdir]);
       imwrite(smallImg(J), fullfile(thisoutdir, 'q.jpg'));
-      for m = 1 : numel(matches)
+      for m = 1 : min(PRINTN, numel(matches))
         imwrite(smallImg(marked{m}), fullfile(thisoutdir, [num2str(m) '.jpg']));
       end
     end

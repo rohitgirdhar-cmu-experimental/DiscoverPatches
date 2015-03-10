@@ -4,11 +4,12 @@ import os, pickle
 import locker
 import pdb
 
-featdir = '/home/rgirdhar/data/Work/Datasets/processed/0001_PALn1KDistractor/features/CNN_fc7_text'
-imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0001_PALn1KDistractor/ImgsList.txt'
-querylistpath = '/home/rgirdhar/data/Work/Datasets/processed/0001_PALn1KDistractor/split/QueryList.txt'
-resultsdir = '/home/rgirdhar/data/Work/Datasets/processed/0001_PALn1KDistractor/learn_good_patches/scratch/query_scores'
-cachedir = '/home/rgirdhar/data/Work/Datasets/processed/0001_PALn1KDistractor/learn_good_patches/scratch'
+featdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/features/CNN_fc7_text'
+imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/ImgsList.txt'
+querylistpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/split/TestList.txt'
+resultsdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/learn_good_patches/scratch/query_scores'
+cachedir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/learn_good_patches/scratch'
+modelfname = 'svr_poly_10K.pkl'
 
 def main():
   model, scaler = readModels()
@@ -21,14 +22,14 @@ def main():
     outpath = os.path.join(resultsdir, str(el) + '.txt')
     if not locker.lock(outpath):
       continue
-    feats = np.loadtxt(os.path.join(featdir, imgslist[el])[:-3] + 'txt')
+    feats = np.loadtxt(os.path.join(featdir, imgslist[el - 1])[:-3] + 'txt') # IMP, 1 indx
     y = predict(feats, scaler, model)
     np.savetxt(outpath, y, fmt = '%0.10f', delimiter = '\n')
     locker.unlock(outpath)
     print('Done for %d' % el)
 
 def readModels():
-  modelcache = os.path.join(cachedir, 'models/', 'svr_rbf.pkl')
+  modelcache = os.path.join(cachedir, 'models/', modelfname)
   if os.path.exists(modelcache):
     model = pickle.load(open(modelcache, 'rb'))
   else:
@@ -41,6 +42,7 @@ def readModels():
   return (model, scaler)
   
 def predict(data, scaler, model):
+  data = preprocessing.normalize(data, norm='l2')
   data = scaler.transform(data)
   y = model.predict(data)
   return y

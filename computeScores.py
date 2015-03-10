@@ -2,11 +2,14 @@
 
 import os, sys, math, subprocess
 
-matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0001_PALn1KDistractor/matches'
-imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0001_PALn1KDistractor/ImgsList.txt'
-testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0001_PALn1KDistractor/split/TestList.txt'
-boxesdir = '/home/rgirdhar/data/Work/Datasets/processed/0001_PALn1KDistractor/selsearch_boxes/'
-outdir = '/home/rgirdhar/data/Work/Datasets/processed/0001_PALn1KDistractor/matches_scores'
+matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/matches'
+#matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0001_PALn1KDistractor/matches_query'
+imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/ImgsList.txt'
+testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/split/TrainList.txt'
+#testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0001_PALn1KDistractor/split/QueryList.txt'
+boxesdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/selsearch_boxes/'
+outdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/matches_scores'
+#outdir = '/home/rgirdhar/data/Work/Datasets/processed/0001_PALn1KDistractor/query_scores'
 
 def main():
   # read images list
@@ -31,8 +34,9 @@ def main():
           pos = 0
           total_possible_score = 0
 #          selboxes = []
-          selected_imid = []
-          for match in matches[0 : 30]:
+          selected_imid = [i]
+
+          for match in matches[0 : 300]:
             score_for_this_pos = 1.0 / (1.02 ** pos)
             idx, score = match.split(':')
             idx = int(idx)
@@ -41,11 +45,6 @@ def main():
             if score < 0.7:
               break
             cls,imid,featid = getClassImgId(idx, imgslist)
-            if imid == i:
-              continue # no points for getting exact duplicate or another patch from same image
-                       # usually ends up giving me perturbations of the same patch
-#            if selboxes and max(computeOverlaps(selboxes, (imid, box))) > 0.8: # too expensive!!!
-#              continue # A close by box from this image has already been selected
             if imid in selected_imid: # no points for matching to another patch in same image
               continue
             if cls == basecls:
