@@ -12,14 +12,26 @@ if ~exist('dim', 'var') || isempty(dim)
   dim = 0;
 end
 col = reshape(col, 1, 1, 3);
-I(box(:, 2) : box(:, 4), box(:, 1) : box(:, 1) + lwid - 1, :) = ...
-  repmat(col, box(:, 4) - box(:, 2) + 1, lwid);
-I(box(:, 2) : box(:, 4), box(:, 3) : box(:, 3) + lwid - 1, :) = ...
-  repmat(col, box(:, 4) - box(:, 2) + 1, lwid);
-I(box(:, 2) : box(:, 2) + lwid - 1, box(:, 1) : box(:, 3), :) = ...
-  repmat(col, lwid, box(:, 3) - box(:, 1) + 1);
-I(box(:, 4) : box(:, 4) + lwid - 1, box(:, 1) : box(:, 3), :) = ...
-  repmat(col, lwid, box(:, 3) - box(:, 1) + 1);
+try
+  I(box(:, 2) : box(:, 4), box(:, 1) : box(:, 1) + lwid - 1, :) = ...
+    repmat(col, box(:, 4) - box(:, 2) + 1, lwid);
+catch
+end
+try
+  I(box(:, 2) : box(:, 4), box(:, 3) : box(:, 3) + lwid - 1, :) = ...
+    repmat(col, box(:, 4) - box(:, 2) + 1, lwid);
+catch
+end
+try
+  I(box(:, 2) : box(:, 2) + lwid - 1, box(:, 1) : box(:, 3), :) = ...
+    repmat(col, lwid, box(:, 3) - box(:, 1) + 1);
+catch
+end
+try
+  I(box(:, 4) : box(:, 4) + lwid - 1, box(:, 1) : box(:, 3), :) = ...
+    repmat(col, lwid, box(:, 3) - box(:, 1) + 1);
+catch
+end
 
 % a messy fix in case the above leads to a changed image size
 I = I(1:size(origI, 1), 1:size(origI, 2), :);

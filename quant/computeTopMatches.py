@@ -9,10 +9,11 @@ matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistra
 imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/ImgsList.txt'
 testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/split/TestList.txt'
 boxesdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/selsearch_boxes/'
-method = 'rbf_1K'
-#method = 'gt'
+#method = 'poly_10K'
+method = 'gt'
 scoresdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/learn_good_patches/scratch/all_query_scores/query_scores_' + method
 outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/learn_good_patches/scratch/retrievals/' + method + '.txt'
+MAXBOXPERIMG = 10000
 
 def main():
   # read images list
@@ -34,11 +35,13 @@ def main():
     matches = readMatches(matchesdir, i, [order[0]])
     scores = computeScores(matches, i-1, imgslist)
     allscores += np.array(scores)
+    fout.write('%d; ' % ((i-1) * MAXBOXPERIMG + order[0])) # query box
     for match in matches[:20]:
       fout.write('%d:%f ' % (match[1], match[0]))
     fout.write('\n')
   fout.close()
-  print allscores / len(testlist)
+  print 'mp1,mp3,mp5,mp10,mp20,atleast1/3,atleast1/10'
+  print ','.join([str(s) for s in list(allscores / len(testlist))[0]])
 
 def readMatches(matchesdir, i, boxids):
   fpath = os.path.join(matchesdir, str(i) + '.txt')
