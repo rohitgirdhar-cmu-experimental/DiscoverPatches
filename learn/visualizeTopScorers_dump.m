@@ -1,11 +1,13 @@
 function visualizeTopScorers_dump()
+% dump top matches into a human readable text file to easily 
+% generate webpages using PyHTMLWriter
 %scoresdir = '/srv2/rgirdhar/Work/Datasets/processed/0004_PALn1KHayesDistractor/learn_good_patches/scratch/all_query_scores/query_scores_rbf_10K/';
 scoresdir = '/srv2/rgirdhar/Work/Datasets/processed/0004_PALn1KHayesDistractor/learn_good_patches/scratch/all_query_scores/query_scores_gt/';
 outdir = '/srv2/rgirdhar/Work/Datasets/processed/0004_PALn1KHayesDistractor/learn_good_patches/scratch/top_patches_text';
 boxesdir = '/srv2/rgirdhar/Work/Datasets/processed/0004_PALn1KHayesDistractor/selsearch_boxes';
 imgslistfile = '/srv2/rgirdhar/Work/Datasets/processed/0004_PALn1KHayesDistractor/ImgsList.txt';
 imgsdir = '/srv2/rgirdhar/Work/Datasets/processed/0004_PALn1KHayesDistractor/corpus';
-matchesdir = '/srv2/rgirdhar/Work/Datasets/processed/0004_PALn1KHayesDistractor/matches';
+matchesdir = '/srv2/rgirdhar/Work/Datasets/processed/0004_PALn1KHayesDistractor/matches_refined';
 detail = 1;
 
 f = fopen(imgslistfile);
@@ -25,7 +27,7 @@ for i = 1 : 1 : 120
     if scores(j) < 0.01
       break
     end
-    fprintf(fout, '%f,%f,%f,%f; %f; ', boxes(j, 1), boxes(j, 2), boxes(j, 3) - boxes(j, 1), boxes(j, 4) - boxes(j, 2), scores(j));
+    fprintf(fout, '%s; %f,%f,%f,%f; %f; ', imgslist{i}, boxes(j, 1), boxes(j, 2), boxes(j, 3) - boxes(j, 1), boxes(j, 4) - boxes(j, 2), scores(j));
     if detail
       line = getLine(fullfile(matchesdir, [num2str(i) '.txt']), order(j));
       matches = cellfun(@(x) strsplit(x, ':'), strsplit(line, ' '), 'UniformOutput', false);
