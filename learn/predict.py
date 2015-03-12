@@ -7,9 +7,11 @@ import pdb
 featdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/features/CNN_fc7_text'
 imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/ImgsList.txt'
 querylistpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/split/TestList.txt'
-resultsdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/learn_good_patches/scratch/query_scores'
 cachedir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/learn_good_patches/scratch'
-modelfname = 'svr_poly_10K.pkl'
+modelfname = 'svr_linear_10000.pkl'
+resultsdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/learn_good_patches/scratch/all_query_scores/' + os.path.splitext(modelfname)[0] + '/'
+if not os.path.exists(resultsdir):
+  os.makedirs(resultsdir)
 
 def main():
   model, scaler = readModels()
@@ -33,7 +35,8 @@ def readModels():
   if os.path.exists(modelcache):
     model = pickle.load(open(modelcache, 'rb'))
   else:
-    print ('Unable to load the model')
+    print ('Unable to load the model from %s' % modelcache)
+    return None
   scalercache = os.path.join(cachedir, 'std_scaler.pkl')
   if os.path.exists(scalercache):
     scaler = pickle.load(open(scalercache, 'rb'))

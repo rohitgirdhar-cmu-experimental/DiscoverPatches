@@ -32,17 +32,18 @@ def main():
             continue # ignore the exact match, I want other images to match
           # Using refined results, so all matched images must be distinct
           if cls == basecls:
-            rel.append(0.85 + 0.15 * score)
+            rel.append(0.95 + 0.05 * score)
+            #rel.append(1)
           else:
             rel.append(0)
-        outfile.write('%f\n' % computeDCG(rel, 20)) # typically use top 20, but works with less too
+        outfile.write('%f\n' % computeDCG(rel, 10)) # typically use top 10, but works with less too
 
 def computeDCG(relevance, k):
   dcg = 0
   if k > len(relevance):
     print('WARNING: len(rel)(%d) < k(%d)' % (len(relevance), k))
   for i in range(min(k, len(relevance))):
-    dcg += (2.0 ** relevance[i] - 1) / math.log(i + 2, 2) # since i is 0 indexed
+    dcg += (math.pow(2.0, relevance[i]) - 1) / math.log(i + 2, 2) # since i is 0 indexed
   return dcg
 
 def getClassImgId(el, lst):

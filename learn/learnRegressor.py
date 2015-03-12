@@ -9,6 +9,8 @@ trainlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDis
 scoresdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/matches_scores'
 cachedir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/learn_good_patches/scratch'
 RAND_SEL = 800 # randomly select these many from each image
+kernelname = 'rbf'
+niter = 10000
 
 def main():
   ## read the data
@@ -16,7 +18,7 @@ def main():
   origData = data
   origLabels = labels
   print('Read data')
-  modelcache = os.path.join(cachedir, 'models/', 'svr_rbf_1K.pkl')
+  modelcache = os.path.join(cachedir, 'models/', 'svr_' + kernelname + '_' + str(niter) + '.pkl')
   print modelcache
   if os.path.exists(modelcache):
     model = pickle.load(open(modelcache, 'rb'))
@@ -29,7 +31,7 @@ def main():
     pickle.dump(scaler, open(os.path.join(cachedir, 'std_scaler.pkl'), 'wb'))
     print ('Scaled the data')
 
-    svr = svm.SVR(kernel='rbf', verbose=1, max_iter=1000)
+    svr = svm.SVR(kernel=kernelname, verbose=1, max_iter=niter)
     #svr = svm.SVR(kernel='poly', verbose=1, max_iter=10000)
     #lr = linear_model.LinearRegression()
     #lr = linear_model.Ridge(alpha = 0.5)
