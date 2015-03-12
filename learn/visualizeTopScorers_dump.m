@@ -16,12 +16,19 @@ imgslist = imgslist{1};
 fclose(f);
 
 for i = 1 : 1 : 120
+  thisoutfpath = fullfile(outdir, [num2str(i) '.txt']);
+
+  if exist(thisoutfpath, 'file') || exist([thisoutfpath '.lock'], 'dir')
+    continue;
+  end
+  unix(['mkdir -p ' thisoutfpath '.lock']);
+
+  fprintf('Doing for %d\n', i);
   scores = dlmread(fullfile(scoresdir, [num2str(i) '.txt']));
   boxes = dlmread(fullfile(boxesdir, [num2str(i) '.txt']), ',');
   boxes = boxes(:, [2 1 4 3]);
   [scores, order] = sort(scores, 'descend');
   boxes = boxes(order, :);
-  thisoutfpath = fullfile(outdir, [num2str(i) '.txt']);
   fout = fopen(thisoutfpath, 'w');
   for j = 1 : min(20, size(boxes, 1))
     if scores(j) < 0.01
@@ -41,6 +48,7 @@ for i = 1 : 1 : 120
     fprintf(fout, '\n');
   end
   fclose(fout);
+  unix(['rmdir ' thisoutfpath '.lock']);
 end
 
 function out = getLine(fpath, lno)
