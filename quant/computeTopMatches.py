@@ -2,17 +2,28 @@
 
 # computes top matches for every image, using a given a scoring
 
-import os, sys, math, subprocess
+import os, sys, math, subprocess, random
 import numpy as np
 
-matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/matches_refined/'
-imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/ImgsList.txt'
-testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/split/TestList.txt'
-boxesdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/selsearch_boxes/'
-#method = 'poly_10K'
-method = 'gt'
-scoresdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/learn_good_patches/scratch/all_query_scores/query_scores_' + method
-outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/learn_good_patches/scratch/retrievals/' + method + '.txt'
+if 1:
+  matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/matches_refined/'
+  imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/ImgsList.txt'
+  testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/split/TestList.txt'
+  method = 'svr_linear_10000'
+  #method = 'gt'
+  scoresdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/learn_good_patches/scratch/all_query_scores/' + method
+  outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/learn_good_patches/scratch/retrievals/' + method + '.txt.random'
+else:
+  # for full img matching case
+  matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/aux_matches/matches_fullImg/matches_refined/'
+  imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/ImgsList.txt'
+  testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/split/TestList.txt'
+  outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/aux_matches/matches_fullImg/matches_top.txt'
+
+takeTopN = -1 # -n = random n patches
+              # -1 = 1 random patch
+              # 1 = top match
+              # 5 = top 5 matches
 MAXBOXPERIMG = 10000
 
 def main():
@@ -25,14 +36,23 @@ def main():
   fout = open(outfpath, 'w')
   allscores = np.zeros((1, 7))
   for i in testlist:
-    with open(os.path.join(scoresdir, str(i) + '.txt')) as f:
-      scores = [float(el) for el in f.read().splitlines()]
-    order = np.argsort(-np.array(scores)) # to reverse sort
+    try:
+      with open(os.path.join(scoresdir, str(i) + '.txt')) as f:
+        patchscores = [float(el) for el in f.read().splitlines()]
+    except:
+      patchscores = [1] # assuming only 1 patch in the image and with score = 1
+    order = np.argsort(-np.array(patchscores)) # to reverse sort
     
     # TODO: do using multiple top patches and use NMS
     
+    selected = []
+    if takeTopN < 0:
+      selected = random.sample(range(len(order)), -takeTopN)
+    elif takeTopN > 0:
+      selected = list(order[:takeTopN])
+
     # get the top matches from each and intersection
-    matches = readMatches(matchesdir, i, [order[0]])
+    matches = readMatches(matchesdir, i, selected)
     scores = computeScores(matches, i-1, imgslist)
     allscores += np.array(scores)
     fout.write('%d; ' % ((i-1) * MAXBOXPERIMG + order[0])) # query box
