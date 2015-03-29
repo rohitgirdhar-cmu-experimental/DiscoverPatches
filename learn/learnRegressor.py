@@ -3,12 +3,15 @@ import numpy as np
 import os, pickle
 import pdb
 
-featdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/features/CNN_fc7_text'
+#featdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/features/CNN_fc7_text'
+DATA_CACHE_FILE = 'data_pool5.npz'
+FEAT_DIM = 9216
+featdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/features/CNN_pool5_text'
 imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/ImgsList.txt'
 trainlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/split/TrainList_120.txt'
 scoresdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/matches_scores'
 cachedir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/learn_good_patches/scratch'
-RAND_SEL = 800 # randomly select these many from each image
+RAND_SEL = 400 # randomly select these many from each image
 kernelname = 'rbf'
 niter = 10000
 
@@ -45,7 +48,7 @@ def main():
   print model.score(origData[testset], origLabels[testset])
 
 def readData():
-  cachepath = os.path.join(cachedir, 'data.npz')
+  cachepath = os.path.join(cachedir, DATA_CACHE_FILE)
   if os.path.exists(cachepath):
     mp = np.load(cachepath)
     return (mp['data'], mp['labels']) 
@@ -59,7 +62,7 @@ def readDataFromDisk():
     imgslist = f.read().splitlines()
   with open(trainlistpath) as f:
     testlist = [int(el) for el in f.read().splitlines()]
-  allfeats = np.empty((0, 4096))
+  allfeats = np.empty((0, FEAT_DIM))
   allscores = np.empty((0, 1))
   for el in testlist:
     # el is 1 indexed, use it as el - 1
