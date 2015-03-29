@@ -1,4 +1,4 @@
-import os, sys
+import os, sys, math
 from PIL import Image
 
 seldir = '/srv2/rgirdhar/Work/Datasets/processed/0004_PALn1KHayesDistractor/selsearch_boxes'
@@ -23,7 +23,7 @@ def main():
   trainlist = readListFromFile(trainlistfile, int)
   imgslist = readListFromFile(imgslistfile, str)
   for i in range(len(trainlist)):
-    fout.write('#%d\n' % i)
+    fout.write('# %d\n' % i)
     idx = trainlist[i]
     fout.write('%s\n' % imgslist[idx - 1])
     fout.write('3\n')
@@ -40,7 +40,8 @@ def main():
         ov = 1
       fout.write('%f ' % ov)
       selbox = [float(el) for el in selbox_str[j].split(',')]
-      fout.write('%f %f %f %f\n' % (selbox[1], selbox[0], selbox[3], selbox[2]))
+      fout.write('%d %d %d %d\n' % (math.ceil(selbox[1] - 1), math.ceil(selbox[0] - 1),
+            math.floor(selbox[3] - 1), math.floor(selbox[2] - 1)))
     
   fout.close()
 
