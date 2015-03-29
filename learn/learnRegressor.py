@@ -1,17 +1,18 @@
 from sklearn import preprocessing, svm, linear_model
 import numpy as np
 import os, pickle
+import h5py
 import pdb
 
 #featdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/features/CNN_fc7_text'
-DATA_CACHE_FILE = 'data_pool5.npz'
+DATA_CACHE_FILE = 'data_pool5.h5'
 FEAT_DIM = 9216
 featdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/features/CNN_pool5_text'
 imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/ImgsList.txt'
 trainlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/split/TrainList_120.txt'
 scoresdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/matches_scores'
-cachedir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/learn_good_patches/scratch'
-RAND_SEL = 400 # randomly select these many from each image
+cachedir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/learn_good_patches/scratch/data_cache'
+RAND_SEL = 800 # randomly select these many from each image
 kernelname = 'rbf'
 niter = 10000
 
@@ -50,11 +51,16 @@ def main():
 def readData():
   cachepath = os.path.join(cachedir, DATA_CACHE_FILE)
   if os.path.exists(cachepath):
-    mp = np.load(cachepath)
-    return (mp['data'], mp['labels']) 
+    h5f = h5py.File(cachepath, 'r')
+    data = h5f['data'][:]
+    labels = h5f['labels'][:]
+    return (data, labels)
   else:
     data, labels = readDataFromDisk()
-    np.savez_compressed(cachepath, data = data, labels = labels)
+    h5f = h5py.File(cachepath, 'w')
+    h5f.create_dataset('data', data=data)
+    h5f.create_dataset('labels', data=labels)
+    h5f.close()
     return (data, labels)
 
 def readDataFromDisk():
