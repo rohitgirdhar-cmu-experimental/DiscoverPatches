@@ -1,0 +1,3 @@
+[submodule "learn/rcnn/caffe"]
+	path = learn/rcnn/caffe
+	url = git@github.com:rohitgirdhar-cmu-experimental/caffe-PatchLearn.git
