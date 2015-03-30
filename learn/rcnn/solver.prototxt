@@ -10,5 +10,5 @@ display: 20
 max_iter: 100000
 momentum: 0.9
 weight_decay: 0.0005
-snapshot: 1000
+snapshot: 10000
 snapshot_prefix: "/srv2/rgirdhar/Work/Datasets/processed/0004_PALn1KHayesDistractor/learn_good_patches/cnn/001_rcnn/models/finetune_rcnn_"
