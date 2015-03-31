@@ -15,7 +15,7 @@ layer {
   window_data_param {
     source: "/srv2/rgirdhar/Work/Datasets/processed/0004_PALn1KHayesDistractor/learn_good_patches/cnn/001_rcnn/window_file.txt"
     root_folder: "/srv2/rgirdhar/Work/Datasets/processed/0004_PALn1KHayesDistractor/corpus/"
-    batch_size: 50
+    batch_size: 100
   }
 }
 layer {
@@ -247,11 +247,11 @@ layer {
   bottom: "pool5"
   top: "fc6-reg"
   param {
-    lr_mult: 1
+    lr_mult: 10
     decay_mult: 1
   }
   param {
-    lr_mult: 2
+    lr_mult: 20
     decay_mult: 0
   }
   inner_product_param {
@@ -288,11 +288,11 @@ layer {
   top: "fc7-reg"
   # Note that lr_mult can be set to 0 to disable any fine-tuning of this, and any other, layer
   param {
-    lr_mult: 1
+    lr_mult: 10
     decay_mult: 1
   }
   param {
-    lr_mult: 2
+    lr_mult: 20
     decay_mult: 0
   }
   inner_product_param {
@@ -328,11 +328,11 @@ layer {
   bottom: "fc7-reg"
   top: "fc8-reg"
   param {
-    lr_mult: 1
+    lr_mult: 10
     decay_mult: 1
   }
   param {
-    lr_mult: 2
+    lr_mult: 20
     decay_mult: 0
   }
   inner_product_param {
