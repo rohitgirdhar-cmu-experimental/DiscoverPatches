@@ -14,6 +14,8 @@ imgslist = imgslist{1};
 for i = 121 : 237
   im = imgslist{i};
   feats = dlmread(fullfile(featdir, strrep(im, '.jpg', '.txt')));
+  feats = bsxfun(@minus, feats, llm.mu);
+  feats = bsxfun(@rdivide, feats, llm.sigma);
   ntest = size(feats, 1);
   scores = liblinear_predict(zeros(ntest, 1), sparse(feats), llm);
   dlmwrite(fullfile(outdir, [num2str(i) '.txt']), scores);
