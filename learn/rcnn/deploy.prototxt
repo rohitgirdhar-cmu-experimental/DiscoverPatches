@@ -1,36 +1,30 @@
-name: "3DCaffeNet"
-layer {
+name: "CaffeNet"
+layers {
   name: "data"
-  type: "WindowRegressionData"
+  type: MEMORY_DATA
   top: "data"
   top: "label"
-  include {
-    phase: TRAIN
+  memory_data_param {
+    batch_size: 100
+    channels: 3
+    height: 227
+    width: 227
   }
   transform_param {
-    mirror: true
     crop_size: 227
-    mean_file: "/srv2/rgirdhar/Software/vision/caffe/data/ilsvrc12/imagenet_mean.binaryproto"
-  }
-  window_data_param {
-    source: "/srv2/rgirdhar/Work/Datasets/processed/0004_PALn1KHayesDistractor/learn_good_patches/cnn/001_rcnn/window_file.txt"
-    root_folder: "/srv2/rgirdhar/Work/Datasets/processed/0004_PALn1KHayesDistractor/corpus/"
-    batch_size: 100
+    mirror: false
+    mean_file: "/home/rgirdhar/data/Software/vision/caffe/data/ilsvrc12/imagenet_mean.binaryproto"
   }
 }
-layer {
+layers {
   name: "conv1"
-  type: "Convolution"
+  type: CONVOLUTION
   bottom: "data"
   top: "conv1"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-  }
+  blobs_lr: 1
+  blobs_lr: 2
+  weight_decay: 1
+  weight_decay: 0
   convolution_param {
     num_output: 96
     kernel_size: 11
@@ -45,15 +39,15 @@ layer {
     }
   }
 }
-layer {
+layers {
   name: "relu1"
-  type: "ReLU"
+  type: RELU
   bottom: "conv1"
   top: "conv1"
 }
-layer {
+layers {
   name: "pool1"
-  type: "Pooling"
+  type: POOLING
   bottom: "conv1"
   top: "pool1"
   pooling_param {
@@ -62,9 +56,9 @@ layer {
     stride: 2
   }
 }
-layer {
+layers {
   name: "norm1"
-  type: "LRN"
+  type: LRN
   bottom: "pool1"
   top: "norm1"
   lrn_param {
@@ -73,19 +67,15 @@ layer {
     beta: 0.75
   }
 }
-layer {
+layers {
   name: "conv2"
-  type: "Convolution"
+  type: CONVOLUTION
   bottom: "norm1"
   top: "conv2"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-  }
+  blobs_lr: 1
+  blobs_lr: 2
+  weight_decay: 1
+  weight_decay: 0
   convolution_param {
     num_output: 256
     pad: 2
@@ -101,15 +91,15 @@ layer {
     }
   }
 }
-layer {
+layers {
   name: "relu2"
-  type: "ReLU"
+  type: RELU
   bottom: "conv2"
   top: "conv2"
 }
-layer {
+layers {
   name: "pool2"
-  type: "Pooling"
+  type: POOLING
   bottom: "conv2"
   top: "pool2"
   pooling_param {
@@ -118,9 +108,9 @@ layer {
     stride: 2
   }
 }
-layer {
+layers {
   name: "norm2"
-  type: "LRN"
+  type: LRN
   bottom: "pool2"
   top: "norm2"
   lrn_param {
@@ -129,19 +119,15 @@ layer {
     beta: 0.75
   }
 }
-layer {
+layers {
   name: "conv3"
-  type: "Convolution"
+  type: CONVOLUTION
   bottom: "norm2"
   top: "conv3"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-  }
+  blobs_lr: 1
+  blobs_lr: 2
+  weight_decay: 1
+  weight_decay: 0
   convolution_param {
     num_output: 384
     pad: 1
@@ -156,25 +142,21 @@ layer {
     }
   }
 }
-layer {
+layers {
   name: "relu3"
-  type: "ReLU"
+  type: RELU
   bottom: "conv3"
   top: "conv3"
 }
-layer {
+layers {
   name: "conv4"
-  type: "Convolution"
+  type: CONVOLUTION
   bottom: "conv3"
   top: "conv4"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-  }
+  blobs_lr: 1
+  blobs_lr: 2
+  weight_decay: 1
+  weight_decay: 0
   convolution_param {
     num_output: 384
     pad: 1
@@ -190,25 +172,21 @@ layer {
     }
   }
 }
-layer {
+layers {
   name: "relu4"
-  type: "ReLU"
+  type: RELU
   bottom: "conv4"
   top: "conv4"
 }
-layer {
+layers {
   name: "conv5"
-  type: "Convolution"
+  type: CONVOLUTION
   bottom: "conv4"
   top: "conv5"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-  }
+  blobs_lr: 1
+  blobs_lr: 2
+  weight_decay: 1
+  weight_decay: 0
   convolution_param {
     num_output: 256
     pad: 1
@@ -224,15 +202,15 @@ layer {
     }
   }
 }
-layer {
+layers {
   name: "relu5"
-  type: "ReLU"
+  type: RELU
   bottom: "conv5"
   top: "conv5"
 }
-layer {
+layers {
   name: "pool5"
-  type: "Pooling"
+  type: POOLING
   bottom: "conv5"
   top: "pool5"
   pooling_param {
@@ -241,19 +219,15 @@ layer {
     stride: 2
   }
 }
-layer {
+layers {
   name: "fc6-reg"
-  type: "InnerProduct"
+  type: INNER_PRODUCT
   bottom: "pool5"
   top: "fc6-reg"
-  param {
-    lr_mult: 10
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 20
-    decay_mult: 0
-  }
+  blobs_lr: 1
+  blobs_lr: 2
+  weight_decay: 1
+  weight_decay: 0
   inner_product_param {
     num_output: 4096
     weight_filler {
@@ -266,35 +240,30 @@ layer {
     }
   }
 }
-layer {
+layers {
   name: "relu6-reg"
-  type: "ReLU"
+  type: RELU
   bottom: "fc6-reg"
   top: "fc6-reg"
 }
-layer {
+layers {
   name: "drop6-reg"
-  type: "Dropout"
+  type: DROPOUT
   bottom: "fc6-reg"
   top: "fc6-reg"
   dropout_param {
     dropout_ratio: 0.5
   }
 }
-layer {
+layers {
   name: "fc7-reg"
-  type: "InnerProduct"
+  type: INNER_PRODUCT
   bottom: "fc6-reg"
   top: "fc7-reg"
-  # Note that lr_mult can be set to 0 to disable any fine-tuning of this, and any other, layer
-  param {
-    lr_mult: 10
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 20
-    decay_mult: 0
-  }
+  blobs_lr: 1
+  blobs_lr: 2
+  weight_decay: 1
+  weight_decay: 0
   inner_product_param {
     num_output: 4096
     weight_filler {
@@ -307,34 +276,30 @@ layer {
     }
   }
 }
-layer {
+layers {
   name: "relu7-reg"
-  type: "ReLU"
+  type: RELU
   bottom: "fc7-reg"
   top: "fc7-reg"
 }
-layer {
+layers {
   name: "drop7-reg"
-  type: "Dropout"
+  type: DROPOUT
   bottom: "fc7-reg"
   top: "fc7-reg"
   dropout_param {
     dropout_ratio: 0.5
   }
 }
-layer {
+layers {
   name: "fc8-reg"
-  type: "InnerProduct"
+  type: INNER_PRODUCT
   bottom: "fc7-reg"
   top: "fc8-reg"
-  param {
-    lr_mult: 10
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 20
-    decay_mult: 0
-  }
+  blobs_lr: 1
+  blobs_lr: 2
+  weight_decay: 1
+  weight_decay: 0
   inner_product_param {
     num_output: 1
     weight_filler {
@@ -347,12 +312,3 @@ layer {
     }
   }
 }
-layer {
-  name: "loss-reg"
-  type: "EuclideanLoss"
-  bottom: "fc8-reg"
-  bottom: "label"
-  top: "loss-reg"
-}
-
-

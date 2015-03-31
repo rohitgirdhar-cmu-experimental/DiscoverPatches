@@ -2,7 +2,7 @@ train_net: "train.prototxt"
 #test_net: "pascal_finetune_val.prototxt"
 #test_iter: 100
 #test_interval: 1000
-base_lr: 0.001
+base_lr: 0.0001
 lr_policy: "step"
 gamma: 0.1
 stepsize: 20000
@@ -10,5 +10,5 @@ display: 20
 max_iter: 100000
 momentum: 0.9
 weight_decay: 0.0005
-snapshot: 1000
+snapshot: 5000
 snapshot_prefix: "/srv2/rgirdhar/Work/Datasets/processed/0004_PALn1KHayesDistractor/learn_good_patches/cnn/001_rcnn/models/finetune_rcnn_"
