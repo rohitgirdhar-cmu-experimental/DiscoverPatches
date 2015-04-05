@@ -4,13 +4,15 @@
 
 import os, sys, math, subprocess, random
 import numpy as np
+sys.path.append('../')
+from computeScores_DCG import computeDCG
 
 if 1:
   matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/matches_refined/'
   imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/ImgsList.txt'
   testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/split/TestList.txt'
-#  method = 'svr_rbf_10000'
-  method = 'gt'
+  method = 'svr_rbf_10000'
+#  method = 'gt'
 #  method = 'svr_linear_FullData_liblinear_pool5'
 #  method = 'deep_regressor_5K'
   scoresdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/learn_good_patches/scratch/all_query_scores/' + method
@@ -37,7 +39,8 @@ def main():
     testlist = [int(t) for t in f.read().splitlines()]
   
   fout = open(outfpath, 'w')
-  allscores = np.zeros((1, 7))
+  allscores = np.zeros((1, 8))
+  allscores_cls = {} # same as allscores, except separately for each cls
   for i in testlist:
     try:
       with open(os.path.join(scoresdir, str(i) + '.txt')) as f:
@@ -60,14 +63,26 @@ def main():
     matches = readMatches(matchesdir, i, selected)
     scores = computeScores(matches, i-1, imgslist)
     allscores += np.array(scores)
+    # also add these scores to class specific lists as well
+    testcls = getClass(i - 1, imgslist)
+    if testcls in allscores_cls.keys():
+      allscores_cls[testcls][0] += np.array(scores)
+      allscores_cls[testcls][1] += 1
+    else:
+      allscores_cls[testcls] = [np.array(scores), 1]
     fout.write('%d; ' % ((i-1) * MAXBOXPERIMG + order[0] + 1)) # query box
     for match in matches[:20]:
       fout.write('%d:%f:%s ' % (match[1], match[0], 
             ','.join([str(el) for el in match[2]])))
     fout.write('\n')
   fout.close()
-  print 'mp1,mp3,mp5,mp10,mp20,atleast1/3,atleast1/10'
+  print 'mp1,mp3,mp5,mp10,mp20,atleast1/3,atleast1/10,DCG/10'
   print ','.join([str(s) for s in list(allscores / len(testlist))[0]])
+  # print for each class
+  classes = allscores_cls.keys()
+  print ','.join(classes)
+  dcg_scores = [allscores_cls[cls][0][7] / allscores_cls[cls][1] for cls in classes]
+  print ','.join([str(el) for el in dcg_scores])
 
 # outputs [(score, imid, imfeatids)...] // imid is not the imid*10K+featid
 def readMatches(matchesdir, i, boxids):
@@ -115,6 +130,7 @@ def computeScores(matches, imgid, imgslist):
     scores.append(float(sum(hits[:i])) / i)
   scores.append(sum(hits[:3]) > 0) # for atleast 1/3
   scores.append(sum(hits[:10]) > 0)
+  scores.append(computeDCG(hits[:10], 10))
   return scores
 
 def readLines(fpath, lnos): # lnos must be 0 indexed
