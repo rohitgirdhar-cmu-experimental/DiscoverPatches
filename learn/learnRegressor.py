@@ -5,16 +5,18 @@ import h5py
 import pdb
 
 #featdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/features/CNN_fc7_text'
-DATA_CACHE_FILE = 'data_pool5.h5'
+DATA_CACHE_FILE = 'data_cache/data_pool5.h5'
 FEAT_DIM = 9216
+OUTDIR = 'models/pool5/'
 featdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/features/CNN_pool5_text'
 imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/ImgsList.txt'
 trainlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/split/TrainList_120.txt'
 scoresdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/matches_scores'
-cachedir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/learn_good_patches/scratch/data_cache'
+cachedir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/learn_good_patches/scratch'
 RAND_SEL = 800 # randomly select these many from each image
 kernelname = 'rbf'
 niter = 10000
+modelcache = os.path.join(cachedir, OUTDIR, 'svr_' + kernelname + '_' + str(niter) + '_pool5.pkl')
 
 def main():
   ## read the data
@@ -22,7 +24,6 @@ def main():
   origData = data
   origLabels = labels
   print('Read data')
-  modelcache = os.path.join(cachedir, 'models/', 'svr_' + kernelname + '_' + str(niter) + '.pkl')
   print modelcache
   if os.path.exists(modelcache):
     model = pickle.load(open(modelcache, 'rb'))
@@ -75,7 +76,8 @@ def readDataFromDisk():
     imgpath = imgslist[el - 1][:-3] + 'txt'
     feats = np.loadtxt(os.path.join(featdir, imgpath))
     scores = np.loadtxt(os.path.join(scoresdir, str(el) + '.txt')).reshape(-1, 1)
-    sel = np.random.choice(range(np.shape(feats)[0]), RAND_SEL)
+    nsel = min(RAND_SEL, np.shape(feats)[0])
+    sel = np.random.choice(range(np.shape(feats)[0]), nsel)
     feats = feats[sel]
     scores = scores[sel]
     allfeats = np.concatenate((allfeats, feats), 0)
