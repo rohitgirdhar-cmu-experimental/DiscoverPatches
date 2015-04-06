@@ -7,16 +7,23 @@ import numpy as np
 sys.path.append('../')
 from computeScores_DCG import computeDCG
 
+takeTopN = 5 # -n = random n patches
+              # -1 = 1 random patch
+              # 1 = top match
+              # 5 = top 5 matches
+select = 1 # 0=> select nth. 1=> select 1..nth (only valid for top matches, not random)
+
 if 1:
   matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/matches_refined/'
   imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/ImgsList.txt'
   testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/split/TestList.txt'
-  method = 'svr_rbf_10000'
+#  method = 'svr_rbf_10000'
 #  method = 'gt'
+  method = 'svr_linear_FullData_liblinear'
 #  method = 'svr_linear_FullData_liblinear_pool5'
 #  method = 'deep_regressor_5K'
   scoresdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/learn_good_patches/scratch/all_query_scores/' + method
-  outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/learn_good_patches/scratch/retrievals/' + method + '.txt'
+  outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/learn_good_patches/scratch/retrievals/' + method + '__' + str(takeTopN) + '.txt'
 else:
   # for full img matching case
   matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/aux_matches/matches_fullImg/matches_refined/'
@@ -24,11 +31,6 @@ else:
   testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/split/TestList.txt'
   outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/aux_matches/matches_fullImg/matches_top.txt'
 
-takeTopN = 1 # -n = random n patches
-              # -1 = 1 random patch
-              # 1 = top match
-              # 5 = top 5 matches
-select = 1 # 0=> select nth. 1=> select 1..nth (only valid for top matches, not random)
 MAXBOXPERIMG = 10000
 
 def main():
@@ -41,6 +43,7 @@ def main():
   fout = open(outfpath, 'w')
   allscores = np.zeros((1, 8))
   allscores_cls = {} # same as allscores, except separately for each cls
+  numdists_cls = {}
   for i in testlist:
     try:
       with open(os.path.join(scoresdir, str(i) + '.txt')) as f:
@@ -70,7 +73,16 @@ def main():
       allscores_cls[testcls][1] += 1
     else:
       allscores_cls[testcls] = [np.array(scores), 1]
-    fout.write('%d; ' % ((i-1) * MAXBOXPERIMG + order[0] + 1)) # query box
+    
+    ndist = countMatchesOfClass(matches, imgslist, 10, 'NaturalImages')
+    if testcls in numdists_cls.keys():
+      numdists_cls[testcls][0] += ndist
+      numdists_cls[testcls][1] += 1
+    else:
+      numdists_cls[testcls] = [ndist, 1]
+    
+    qboxes = [(i-1) * MAXBOXPERIMG + el + 1 for el in selected]
+    fout.write('%s; ' % ','.join([str(el) for el in qboxes])) # query box
     for match in matches[:20]:
       fout.write('%d:%f:%s ' % (match[1], match[0], 
             ','.join([str(el) for el in match[2]])))
@@ -83,6 +95,8 @@ def main():
   print ','.join(classes)
   dcg_scores = [allscores_cls[cls][0][7] / allscores_cls[cls][1] for cls in classes]
   print ','.join([str(el) for el in dcg_scores])
+  print ','.join([str(numdists_cls[cls][0] * 1.0 / numdists_cls[cls][1]) 
+      for cls in classes])
 
 # outputs [(score, imid, imfeatids)...] // imid is not the imid*10K+featid
 def readMatches(matchesdir, i, boxids):
@@ -132,6 +146,12 @@ def computeScores(matches, imgid, imgslist):
   scores.append(sum(hits[:10]) > 0)
   scores.append(computeDCG(hits[:10], 10))
   return scores
+
+# matches must be [(score, imid)...]
+def countMatchesOfClass(matches, imgslist, n, cls):
+  clses = [getClass(m[1], imgslist) for m in matches][:n]
+  hits = [c == cls for c in clses]
+  return sum(hits)
 
 def readLines(fpath, lnos): # lnos must be 0 indexed
   order = np.argsort(np.array(lnos))
