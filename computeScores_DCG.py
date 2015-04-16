@@ -4,13 +4,23 @@ import os, sys, math, subprocess
 from itertools import izip
 from PIL import Image
 
-datadir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/corpus/'
-matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/matches_refined'
-imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/ImgsList.txt'
-testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/split/TrainList.txt'
-boxesdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/selsearch_boxes/'
-outdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/matches_scores'
-MIN_DIM_BOX = 0.05 # set score for any box smaller than MIN_DIM_BOX*IM_WID x MIN_DIM_BOX*IM_HT to 0
+if 0:
+  datadir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/corpus/'
+  matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/matches_refined'
+  imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/ImgsList.txt'
+  testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/split/TrainList.txt'
+  boxesdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/selsearch_boxes/'
+  outdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/matches_scores'
+  MIN_DIM_BOX = 0.05 # set score for any box smaller than MIN_DIM_BOX*IM_WID x MIN_DIM_BOX*IM_HT to 0
+else:
+  datadir = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/corpus/'
+  matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_refined/train/'
+  imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/lists/Images.txt'
+  testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/lists/NdxesPeopleTrain.txt'
+  boxesdir = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/selsearch_boxes/'
+  outdir = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_scores'
+  MIN_DIM_BOX = 0.05 # set score for any box smaller than MIN_DIM_BOX*IM_WID x MIN_DIM_BOX*IM_HT to 0
+ 
 
 def main():
   # read images list
@@ -26,6 +36,9 @@ def main():
     [im_wd, im_ht] = getImDims(imgslist[baseimname - 1])
     with open(os.path.join(matchesdir, str(i) + '.txt')) as f, open(os.path.join(boxesdir, str(i) + '.txt')) as f2:
       for line, line2 in izip(f, f2):
+        if len(line.strip()) == 0:
+          outfile.write('-1\n')
+          continue
         box = [float(el) for el in line2.strip().split(',')]
         if box[2] - box[0] <= MIN_DIM_BOX * im_ht or box[3] - box[1] <= MIN_DIM_BOX * im_wd:
           outfile.write('0\n')
@@ -36,7 +49,7 @@ def main():
           idx, score = match.split(':')
           idx = int(idx)
           score = float(score)
-          cls,imid,featid = getClassImgId(idx, imgslist)
+          cls,imid,_ = getClassImgId(idx, imgslist)
           if imid == i:
             continue # ignore the exact match, I want other images to match
           # Using refined results, so all matched images must be distinct
@@ -56,7 +69,10 @@ def computeDCG(relevance, k):
   return dcg
 
 def getClassImgId(el, lst):
-  return (os.path.dirname(lst[el / 10000]), el / 10000 + 1, el % 10000)
+  # old system (0,1)
+  #return (os.path.dirname(lst[el / 10000]), el / 10000 + 1, el % 10000)
+  # new system (1,1)
+  return (os.path.dirname(lst[el / 10000 - 1]), el / 10000, el % 10000 - 1)
 
 def getImDims(impath):
   im = Image.open(os.path.join(datadir, impath))

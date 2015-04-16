@@ -6,15 +6,19 @@ import os, sys, math, subprocess, random
 import numpy as np
 sys.path.append('../')
 from computeScores_DCG import computeDCG
+from nms import non_max_suppression_fast
 
-takeTopN = 5 # -n = random n patches
+takeTopN = 1 # -n = random n patches
               # -1 = 1 random patch
               # 1 = top match
               # 5 = top 5 matches
 select = 1 # 0=> select nth. 1=> select 1..nth (only valid for top matches, not random)
+nmsTh = 0.9 # set = -1 for no NMS
+          # else, set a threshold between [0, 1]
 
-if 1:
+if 0:
   matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/matches_refined/'
+  selboxdir = '/srv2/rgirdhar/Work/Datasets/processed/0004_PALn1KHayesDistractor/selsearch_boxes/'
   imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/ImgsList.txt'
   testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/split/TestList.txt'
 #  method = 'svr_rbf_10000'
@@ -23,7 +27,22 @@ if 1:
 #  method = 'svr_linear_FullData_liblinear_pool5'
 #  method = 'deep_regressor_5K'
   scoresdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/learn_good_patches/scratch/all_query_scores/' + method
-  outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/learn_good_patches/scratch/retrievals/' + method + '__' + str(takeTopN) + '.txt'
+  outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/learn_good_patches/scratch/retrievals/' + method + '__' + str(takeTopN) + '__nms' + str(nmsTh) + '.txt'
+elif 1:
+  # for full img matching case
+  matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_refined/fullImg/'
+  imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/lists/Images.txt'
+  testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/lists/NdxesPeopleTest.txt'
+  outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_top/fullImg.txt'
+  nmsTh = -1 # set = -1 for no NMS
+elif 0:
+  # for patch case
+  matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_refined/test/'
+  imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/lists/Images.txt'
+  testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/lists/NdxesPeopleTest.txt'
+  outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_top/test.txt'
+  scoresdir = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/query_scores/fc7_PeopleOnly/'
+  nmsTh = -1 # set = -1 for no NMS
 else:
   # for full img matching case
   matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/aux_matches/matches_fullImg/matches_refined/'
@@ -51,8 +70,9 @@ def main():
     except:
       patchscores = [1] # assuming only 1 patch in the image and with score = 1
     order = np.argsort(-np.array(patchscores)) # to reverse sort
-    
-    # TODO: do using multiple top patches with NMS
+  
+    if nmsTh >= 0:
+      order = performNMS(order, os.path.join(selboxdir, str(i) + '.txt'), nmsTh)
     
     selected = []
     if takeTopN < 0:
@@ -64,7 +84,7 @@ def main():
 
     # get the top matches from each and intersection
     matches = readMatches(matchesdir, i, selected)
-    scores = computeScores(matches, i-1, imgslist)
+    scores = computeScores(matches, i, imgslist)
     allscores += np.array(scores)
     # also add these scores to class specific lists as well
     testcls = getClass(i - 1, imgslist)
@@ -81,7 +101,7 @@ def main():
     else:
       numdists_cls[testcls] = [ndist, 1]
     
-    qboxes = [(i-1) * MAXBOXPERIMG + el + 1 for el in selected]
+    qboxes = [(i) * MAXBOXPERIMG + el + 1 for el in selected]
     fout.write('%s; ' % ','.join([str(el) for el in qboxes])) # query box
     for match in matches[:20]:
       fout.write('%d:%f:%s ' % (match[1], match[0], 
@@ -167,6 +187,23 @@ def getClass(imid, imgslist):
 
 def getImgId(idx):
   return idx / MAXBOXPERIMG
+
+def performNMS(order, selboxfpath, th):
+  f = open(selboxfpath)
+  boxes = [[float(el) for el in line.split(',')] 
+      for line in f.read().splitlines()]
+  f.close()
+  # this order is descending, so store reverse of this order for nms
+  # and then reverse back the output
+  boxes = [(box[1],box[0],box[3],box[2]) for box in boxes]
+  boxes_rev = []
+  order_rev = []
+  for i in order[::-1]:
+    boxes_rev.append(boxes[i])
+    order_rev.append(i)
+  _, pick = non_max_suppression_fast(np.array(boxes_rev), th)
+  order_rev = np.array(order_rev)
+  return order_rev[pick]
 
 if __name__ == '__main__':
   main()
