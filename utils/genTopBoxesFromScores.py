@@ -1,6 +1,9 @@
 import numpy as np
 import os
 
+## Script to generate top-n scoring boxes, so as to 
+## compute matches only for those patches
+
 scoresdir = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/query_scores/fc7_PeopleOnly/'
 testidxfpath = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/lists/NdxesPeopleTest.txt'
 outdir = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/query_scores/fc7_PeopleOnly_topIdxs'
