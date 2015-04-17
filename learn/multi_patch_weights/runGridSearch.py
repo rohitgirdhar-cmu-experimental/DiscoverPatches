@@ -18,21 +18,30 @@ with open(trainidxs) as f:
   testlist = [int(t) for t in f.read().splitlines()]
 
 def main():
-  print evalParamValue(10)
+  maxscore = -1
+  maxscore_param = -1
+  params =  np.arange(0, 5, 0.1)
+  tot = evalParamValue(params)
+  print 'top: ', params[np.argmax(tot)]
 
-def evalParamValue(param):
-  tot = 0
+def evalParamValue(params):
+  tot = np.zeros((len(params), 1))
   for i in testlist:
     sims = readHDF5(os.path.join(simmatdir_bin, str(i) + '.h5'), 'sims')
     patchscores = readHDF5(os.path.join(scoresdir_bin, str(i) + '.h5'), 'scores')
-    
-    selected,selscores = selectPatches(patchscores, sims, param, 5)
+    noMatchesList = getNoMatchesExistList(matchesdir, i) # returns 0 indexed
 
-    # get the top matches from each and intersection
-    matches = readMatches(matchesdir, i, selected)
-    score = computeScoresDCG_wrapper(matches, i, imgslist)
-    tot += score # the DCG
-    print '%d : %f' % (i, score)
+    pi = 0
+    for param in params:
+      selected,selscores = selectPatches(patchscores, sims, param, 5, noMatchesList)
+
+      # get the top matches from each and intersection
+      matches = readMatches(matchesdir, i, selected)
+      score = computeScoresDCG_wrapper(matches, i, imgslist)
+      tot[pi] += score # the DCG
+      print '%d : %f : %f' % (i, param, score)
+      pi += 1
+  #return tot * 1.0 / len(testlist)
   return tot * 1.0 / len(testlist)
 
 # outputs [(score, imid, imfeatids)...] // imid is not the imid*10K+featid
@@ -104,6 +113,14 @@ def readHDF5(fpath, dbname):
   data = f[dbname][:]
   f.close()
   return data
+
+def getNoMatchesExistList(dpath, imgid):
+  # imgid is 1 indexed
+  fpath = os.path.join(dpath, str(imgid) + '.txt')
+  f = open(fpath, 'r')
+  lengths = [len(line) for line in f.read().splitlines()]
+  f.close()
+  return [i for i, e in enumerate(lengths) if e == 0]
 
 if __name__ == '__main__':
   main()

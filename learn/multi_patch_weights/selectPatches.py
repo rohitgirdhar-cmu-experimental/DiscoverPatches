@@ -1,8 +1,10 @@
 import numpy as np
 # takes unary scores, pairwise sims and param to compute selection
 # Both inputs are np.array
+# noMatchesExist is list of boxes for this image for which no results exits
+# hence should not be considered (no way to fix it yet) (0-indexed)
 # output is 0 indexed
-def selectPatches(unary, sims, param1, nsel):
+def selectPatches(unary, sims, param1, nsel, noMatchesExist):
   # follow a greedy strategy to select
   assert(np.size(unary) == np.shape(sims)[0] == np.shape(sims)[1])
   toppatches = np.argsort(-np.array(unary))
@@ -14,6 +16,8 @@ def selectPatches(unary, sims, param1, nsel):
     top_perf_score = -1e6
     top_perf = -1
     for j in range(np.size(unary)):
+      if j in noMatchesExist:
+        continue
       if j in sel:
         continue
       # compute the score for this patch
