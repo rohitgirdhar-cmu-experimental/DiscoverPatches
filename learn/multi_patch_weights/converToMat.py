@@ -26,8 +26,6 @@ def evalParamValue(param):
     f.create_dataset("scores", data=patchscores)
     f.close()
 
-    
-
 if __name__ == '__main__':
   main()
 
