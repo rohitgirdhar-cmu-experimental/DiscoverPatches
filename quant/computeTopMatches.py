@@ -28,14 +28,14 @@ if 0:
 #  method = 'deep_regressor_5K'
   scoresdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/learn_good_patches/scratch/all_query_scores/' + method
   outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/learn_good_patches/scratch/retrievals/' + method + '__' + str(takeTopN) + '__nms' + str(nmsTh) + '.txt'
-elif 1:
+elif 0:
   # for full img matching case
   matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_refined/fullImg/'
   imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/lists/Images.txt'
   testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/lists/NdxesPeopleTest.txt'
   outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_top/fullImg.txt'
   nmsTh = -1 # set = -1 for no NMS
-elif 0:
+elif 1:
   # for patch case
   matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_refined/test/'
   imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/lists/Images.txt'
@@ -156,8 +156,8 @@ def computeScores(matches, imgid, imgslist):
   sameornot = [m[1] == imgid for m in matches]
   del matches[np.where(sameornot)[0][0]]
 
-  clses = [getClass(m[1], imgslist) for m in matches]
-  cls = getClass(imgid, imgslist)
+  clses = [getClass(m[1] - 1, imgslist) for m in matches]
+  cls = getClass(imgid - 1, imgslist)
   hits = [c == cls for c in clses]
   scores = []
   for i in [1,3,5,10,20]: # for mP
@@ -169,7 +169,7 @@ def computeScores(matches, imgid, imgslist):
 
 # matches must be [(score, imid)...]
 def countMatchesOfClass(matches, imgslist, n, cls):
-  clses = [getClass(m[1], imgslist) for m in matches][:n]
+  clses = [getClass(m[1] - 1, imgslist) for m in matches][:n]
   hits = [c == cls for c in clses]
   return sum(hits)
 
@@ -182,7 +182,7 @@ def readLines(fpath, lnos): # lnos must be 0 indexed
         lines.append(line)
   return list(np.array(lines)[order])
 
-def getClass(imid, imgslist):
+def getClass(imid, imgslist): # imgid here must be 0-indexed!!!
   return os.path.dirname(imgslist[imid])
 
 def getImgId(idx):
