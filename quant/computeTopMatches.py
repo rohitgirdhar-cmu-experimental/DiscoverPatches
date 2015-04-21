@@ -7,12 +7,16 @@ import numpy as np
 sys.path.append('../')
 from computeScores_DCG import computeDCG
 from nms import non_max_suppression_fast
+sys.path.append('../learn/multi_patch_weights/')
+from selectPatches import selectPatches
+import h5py
 
 takeTopN = 1 # -n = random n patches
               # -1 = 1 random patch
               # 1 = top match
               # 5 = top 5 matches
-select = 1 # 0=> select nth. 1=> select 1..nth (only valid for top matches, not random)
+param1 = -0
+upto = 1 # 0=> select nth. 1=> select 1..nth (only valid for top matches, not random)
 nmsTh = 0.9 # set = -1 for no NMS
           # else, set a threshold between [0, 1]
 
@@ -30,25 +34,49 @@ if 0:
   outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/learn_good_patches/scratch/retrievals/' + method + '__' + str(takeTopN) + '__nms' + str(nmsTh) + '.txt'
 elif 0:
   # for full img matching case
+  method = 'full-img'
   matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_refined/fullImg/'
   imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/lists/Images.txt'
   testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/lists/NdxesPeopleTest.txt'
   outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_top/fullImg.txt'
+  simsmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/learn/pairwise_matches_bin/'
   nmsTh = -1 # set = -1 for no NMS
-elif 1:
+elif 0:
   # for patch case
+  method = 'patch'
   matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_refined/test/'
   imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/lists/Images.txt'
   testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/lists/NdxesPeopleTest.txt'
   outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_top/test.txt'
   scoresdir = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/query_scores/fc7_PeopleOnly/'
+  simsmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/learn/pairwise_matches_bin/'
   nmsTh = -1 # set = -1 for no NMS
-else:
+elif 0:
   # for full img matching case
   matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/aux_matches/matches_fullImg/matches_refined/'
   imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/ImgsList.txt'
   testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/split/TestList.txt'
   outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/aux_matches/matches_fullImg/matches_top.txt'
+elif 0:
+  # Hussian,for patch case
+  method = 'patch'
+  matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0007_HussianHotels/matches_refined/test/'
+  imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0007_HussianHotels/lists/Images.txt'
+  testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0007_HussianHotels/lists/NdxesTest.txt'
+  outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0007_HussianHotels/matches_top/test.txt'
+  scoresdir = '/srv2/rgirdhar/Work/Datasets/processed/0007_HussianHotels/query_scores/fc7_TrainOnly/'
+  simsmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/learn/pairwise_matches_bin/' # just dummy here
+  nmsTh = -1 # set = -1 for no NMS
+  param1 = 0
+elif 1:
+  # Hussian,for full img matching case
+  method = 'full-img'
+  matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0007_HussianHotels/matches_refined/fullImg/'
+  imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0007_HussianHotels/lists/Images.txt'
+  testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0007_HussianHotels/lists/NdxesTest.txt'
+  outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0007_HussianHotels/matches_top/fullImg.txt'
+  simsmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0007_HussianHotels/learn/pairwise_matches_bin/'
+  nmsTh = -1 # set = -1 for no NMS
 
 MAXBOXPERIMG = 10000
 
@@ -64,6 +92,7 @@ def main():
   allscores_cls = {} # same as allscores, except separately for each cls
   numdists_cls = {}
   for i in testlist:
+    print i
     try:
       with open(os.path.join(scoresdir, str(i) + '.txt')) as f:
         patchscores = [float(el) for el in f.read().splitlines()]
@@ -73,14 +102,23 @@ def main():
   
     if nmsTh >= 0:
       order = performNMS(order, os.path.join(selboxdir, str(i) + '.txt'), nmsTh)
-    
-    selected = []
-    if takeTopN < 0:
-      selected = random.sample(range(len(order)), -takeTopN)
-    elif takeTopN > 0 and select == 1:
-      selected = list(order[:takeTopN])
-    elif takeTopN > 0 and select == 0:
-      selected = [order[takeTopN - 1]]
+
+    if 1:
+      selected = []
+      if takeTopN < 0:
+        selected = random.sample(range(len(order)), -takeTopN)
+      elif takeTopN > 0 and upto == 1:
+        selected = list(order[:takeTopN])
+      elif takeTopN > 0 and upto == 0:
+        selected = [order[takeTopN - 1]]
+    else:
+      if not (method == 'full-img'):
+        sims = readHDF5(os.path.join(simsmatdir_bin, str(i) + '.h5'), 'sims')
+        selected,_ = selectPatches(np.array(patchscores), sims, param1, takeTopN, [])
+        if upto == 0:
+          selected = [selected[takeTopN - 1]]
+      else:
+        selected = [0]
 
     # get the top matches from each and intersection
     matches = readMatches(matchesdir, i, selected)
@@ -154,7 +192,8 @@ def mergeRanklists(allmatches):
 def computeScores(matches, imgid, imgslist):
   # remove the exact match
   sameornot = [m[1] == imgid for m in matches]
-  del matches[np.where(sameornot)[0][0]]
+  if sum(sameornot) > 0:
+    del matches[np.where(sameornot)[0][0]]
 
   clses = [getClass(m[1] - 1, imgslist) for m in matches]
   cls = getClass(imgid - 1, imgslist)
@@ -204,6 +243,13 @@ def performNMS(order, selboxfpath, th):
   _, pick = non_max_suppression_fast(np.array(boxes_rev), th)
   order_rev = np.array(order_rev)
   return order_rev[pick]
+
+def readHDF5(fpath, dbname):
+  print fpath
+  f = h5py.File(fpath, 'r')
+  data = f[dbname][:]
+  f.close()
+  return data
 
 if __name__ == '__main__':
   main()
