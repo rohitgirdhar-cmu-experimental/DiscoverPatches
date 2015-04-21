@@ -15,14 +15,14 @@ getArray "/IUS/homes4/rohytg/work/data/002_ExtendedPAL/lists/Images.txt"
 
 mkdir -p $newcorpusdir/trainNneg
 while read line; do
-  ln -s $corpusdir/${array[$line]} $newcorpusdir/trainNneg/$line.jpg
+  ln -s $corpusdir/${array[$(($line-1))]} $newcorpusdir/trainNneg/$line.jpg
 done < /IUS/homes4/rohytg/work/data/002_ExtendedPAL/lists/NdxesTrain.txt
 
 # fix the 10571
 
 mkdir -p $newcorpusdir/test/
 while read line; do
-  ln -s $corpusdir/${array[$line]} $newcorpusdir/test/$line.jpg
+  ln -s $corpusdir/${array[$(($line-1))]} $newcorpusdir/test/$line.jpg
 done < /IUS/homes4/rohytg/work/data/002_ExtendedPAL/lists/NdxesTest.txt
 
 
