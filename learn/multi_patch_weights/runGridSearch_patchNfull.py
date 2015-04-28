@@ -4,13 +4,16 @@ import h5py
 sys.path.append('/srv2/rgirdhar/Work/Code/0003_DiscoverPatches/DiscoverPatches/')
 from computeScores_DCG import computeDCG
 from selectPatches import selectPatches
+sys.path.append('/srv2/rgirdhar/Work/Code/0003_DiscoverPatches/DiscoverPatches/quant/')
+from computeTopMatches import readMatchesWithFull
 
 imgslistpath = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/lists/Images.txt'
 simmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/learn/pairwise_matches_bin/'
 scoresdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/learn/train_crossval_scores_bin/'
 trainidxs = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/lists/NdxesPeopleTrain.txt'
 matchesdir = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/matches/train/'
-N = 3;
+fullmatchesdir = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/matches/fullImg_train/'
+N = 1;
 MAXBOXPERIMG = 10000
 
 with open(imgslistpath) as f:
@@ -34,10 +37,10 @@ def evalParamValue(params):
 
     pi = 0
     for param in params:
-      selected,selscores = selectPatches(patchscores, sims, param, N, noMatchesList)
+      selected,selscores = selectPatches(patchscores, sims, 0, N, noMatchesList)
 
       # get the top matches from each and intersection
-      matches = readMatches(matchesdir, i, selected)
+      matches = readMatchesWithFull(matchesdir, fullmatchesdir, i, selected, param)
       score = computeScoresDCG_wrapper(matches, i, imgslist)
       #score = computeScoresMP3_wrapper(matches, i, imgslist)
       tot[pi] += score # the DCG
@@ -45,38 +48,6 @@ def evalParamValue(params):
       pi += 1
   #return tot * 1.0 / len(testlist)
   return tot * 1.0 / len(testlist)
-
-# outputs [(score, imid, imfeatids)...] // imid is not the imid*10K+featid
-def readMatches(matchesdir, i, boxids):
-  fpath = os.path.join(matchesdir, str(i) + '.txt')
-  lines = readLines(fpath, boxids)
-  allmatches = []
-  for line in lines:
-    matches = []
-    for el in line.strip().split()[:50]:
-      el2 = el.split(':')
-      matches.append((float(el2[1]), int(el2[0])))
-    allmatches.append(matches)
-  matches = mergeRanklists(allmatches)
-  return matches
-
-# returns [(score, imgid, imfeatids)..]
-def mergeRanklists(allmatches):
-  imid2score = {}
-  imid2feats = {} # store what bounding boxes in this image matched
-  for matches in allmatches:
-    for match in matches:
-      imid = getImgId(match[1])
-      if imid not in imid2score.keys():
-        imid2score[imid] = match[0]
-        imid2feats[imid] = [match[1]]
-      else:
-        imid2score[imid] += match[0]
-        imid2feats[imid].append(match[1])
-  res = imid2score.items()
-  res = sorted(res, key=lambda tup: tup[1], reverse=True) # remember, reverse sort!
-  res = [(m[1], m[0], imid2feats[m[0]]) for m in res]
-  return res
 
 # matches must be [(score, imid)...]
 def computeScoresDCG_wrapper(matches, imgid, imgslist):
