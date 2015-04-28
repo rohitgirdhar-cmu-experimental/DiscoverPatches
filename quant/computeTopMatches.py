@@ -87,6 +87,7 @@ elif 0:
   nmsTh = -1 # set = -1 for no NMS
 elif 1:
   # for patch case
+  FULL_MATCH_WT = 5 # this x the score for full image
   method = 'patch+full'
   matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_refined/test/'
   fullmatchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_refined/fullImg/'
@@ -141,7 +142,7 @@ def main():
 
     # get the top matches from each and intersection
     if method == 'patch+full':
-      matches = readMatchesWithFull(matchesdir, fullmatchesdir, i, selected)
+      matches = readMatchesWithFull(matchesdir, fullmatchesdir, i, selected, FULL_MATCH_WT)
     else:
       matches = readMatches(matchesdir, i, selected)
 
@@ -194,8 +195,7 @@ def readMatches(matchesdir, i, boxids):
   return matches
 
 # outputs [(score, imid, imfeatids)...] // imid is not the imid*10K+featid
-def readMatchesWithFull(matchesdir, fullmatchesdir, i, boxids):
-  FULL_MATCH_WT = 3 # this x the score for full image
+def readMatchesWithFull(matchesdir, fullmatchesdir, i, boxids, FULL_MATCH_WT):
   # patch matches
   fpath = os.path.join(matchesdir, str(i) + '.txt')
   lines = readLines(fpath, boxids)
