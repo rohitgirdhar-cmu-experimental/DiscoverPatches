@@ -68,7 +68,7 @@ elif 0:
   simsmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/learn/pairwise_matches_bin/' # just dummy here
   nmsTh = -1 # set = -1 for no NMS
   param1 = 0
-elif 1:
+elif 0:
   # Hussian,for full img matching case
   method = 'full-img'
   matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0007_HussianHotels/matches_refined/fullImg/'
@@ -76,6 +76,25 @@ elif 1:
   testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0007_HussianHotels/lists/NdxesTest.txt'
   outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0007_HussianHotels/matches_top/fullImg.txt'
   simsmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0007_HussianHotels/learn/pairwise_matches_bin/'
+  nmsTh = -1 # set = -1 for no NMS
+elif 0:
+  # for full img matching case (BOW)
+  method = 'full-img'
+  matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_refined/fullImg_bow+gv/'
+  imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/lists/Images.txt'
+  testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/lists/NdxesPeopleTest.txt'
+  outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_top/fullImg_bow+gv.txt'
+  nmsTh = -1 # set = -1 for no NMS
+elif 1:
+  # for patch case
+  method = 'patch+full'
+  matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_refined/test/'
+  fullmatchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_refined/fullImg/'
+  imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/lists/Images.txt'
+  testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/lists/NdxesPeopleTest.txt'
+  outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_top/test.txt'
+  scoresdir = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/query_scores/fc7_PeopleOnly/'
+  simsmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/learn/pairwise_matches_bin/'
   nmsTh = -1 # set = -1 for no NMS
 
 MAXBOXPERIMG = 10000
@@ -121,7 +140,11 @@ def main():
         selected = [0]
 
     # get the top matches from each and intersection
-    matches = readMatches(matchesdir, i, selected)
+    if method == 'patch+full':
+      matches = readMatchesWithFull(matchesdir, fullmatchesdir, i, selected)
+    else:
+      matches = readMatches(matchesdir, i, selected)
+
     scores = computeScores(matches, i, imgslist)
     allscores += np.array(scores)
     # also add these scores to class specific lists as well
@@ -167,6 +190,32 @@ def readMatches(matchesdir, i, boxids):
       el2 = el.split(':')
       matches.append((float(el2[1]), int(el2[0])))
     allmatches.append(matches)
+  matches = mergeRanklists(allmatches)
+  return matches
+
+# outputs [(score, imid, imfeatids)...] // imid is not the imid*10K+featid
+def readMatchesWithFull(matchesdir, fullmatchesdir, i, boxids):
+  FULL_MATCH_WT = 3 # this x the score for full image
+  # patch matches
+  fpath = os.path.join(matchesdir, str(i) + '.txt')
+  lines = readLines(fpath, boxids)
+  allmatches = []
+  for line in lines:
+    matches = []
+    for el in line.strip().split()[:50]:
+      el2 = el.split(':')
+      matches.append((float(el2[1]), int(el2[0])))
+    allmatches.append(matches)
+  # full matches
+  fpath = os.path.join(fullmatchesdir, str(i) + '.txt')
+  lines = readLines(fpath, [0])
+  for line in lines:
+    matches = []
+    for el in line.strip().split()[:50]:
+      el2 = el.split(':')
+      matches.append((float(el2[1]) * FULL_MATCH_WT, int(el2[0])))
+    allmatches.append(matches)
+
   matches = mergeRanklists(allmatches)
   return matches
 
