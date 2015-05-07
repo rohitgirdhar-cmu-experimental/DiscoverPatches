@@ -85,7 +85,7 @@ elif 0:
   testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/lists/NdxesPeopleTest.txt'
   outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_top/fullImg_bow+gv.txt'
   nmsTh = -1 # set = -1 for no NMS
-elif 1:
+elif 0:
   # for patch case
   FULL_MATCH_WT = 5 # this x the score for full image
   method = 'patch+full'
@@ -97,6 +97,88 @@ elif 1:
   scoresdir = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/query_scores/fc7_PeopleOnly/'
   simsmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/learn/pairwise_matches_bin/'
   nmsTh = -1 # set = -1 for no NMS
+elif 0:
+  # for full img matching case
+  method = 'full-img'
+  matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_refined/Jegou13/001_basic/'
+  imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/lists/Images.txt'
+  testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/lists/NdxesPeopleTest.txt'
+  outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_top/Jegou13.txt'
+  simsmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/learn/pairwise_matches_bin/'
+  nmsTh = -1 # set = -1 for no NMS
+elif 0:
+  # for full img matching case (Jegou - with hes aff features)
+  method = 'full-img'
+  matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_refined/Jegou13_hesaff/'
+  imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/lists/Images.txt'
+  testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/lists/NdxesPeopleTest.txt'
+  outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_top/Jegou13_hesaff.txt'
+#  simsmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/learn/pairwise_matches_bin/'
+  nmsTh = -1 # set = -1 for no NMS
+elif 0:
+  # for full img matching case (Jegou - with hes aff features)
+  method = 'full-img'
+  matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_refined/Jegou13_hesaff_heatmap/'
+  imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/lists/Images.txt'
+  testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/lists/NdxesPeopleTest.txt'
+  outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_top/Jegou13_hesaff_heatmap.txt'
+#  simsmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/learn/pairwise_matches_bin/'
+  nmsTh = -1 # set = -1 for no NMS
+elif 0:
+  # for full img matching case
+  method = 'full-img'
+  matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_refined/Jegou13/001_basic/'
+  imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/lists/Images.txt'
+  testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/lists/NdxesPeopleTest.txt'
+  outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_top/Jegou13.txt'
+  simsmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/learn/pairwise_matches_bin/'
+  nmsTh = -1 # set = -1 for no NMS
+elif 1:
+  # OxBuildings,for patch case
+  method = 'patch'
+  get_class_style = 'oxford'
+  matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/matches_refined/test/'
+  imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/lists/Images.txt'
+  testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/lists/NdxesTest.txt'
+  outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/matches_top/test.txt'
+  scoresdir = '/srv2/rgirdhar/Work/Datasets/processed/0008_OxBuildings/query_scores/fc7/'
+  #simsmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0008_OxBuildings/learn/pairwise_matches_bin/' # just dummy here
+  nmsTh = -1 # set = -1 for no NMS
+  param1 = 0
+elif 0:
+  # for full img matching case
+  method = 'full-img'
+  get_class_style = 'oxford'
+  matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/matches_refined/fullImg'
+  imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/lists/Images.txt'
+  testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/lists/NdxesTest.txt'
+  outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/matches_top/fullImg.txt'
+  #simsmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0008_OxBuildings/learn/pairwise_matches_bin/'
+  nmsTh = -1 # set = -1 for no NMS
+elif 0:
+  # for full img matching case
+  FULL_MATCH_WT = 3 # this x the score for full image
+  get_class_style = 'oxford'
+  method = 'patch+full'
+  matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/matches_refined/test/'
+  fullmatchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/matches_refined/fullImg/'
+  imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/lists/Images.txt'
+  testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/lists/NdxesTest.txt'
+  outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/matches_top/testpatch.txt'
+  scoresdir = '/srv2/rgirdhar/Work/Datasets/processed/0008_OxBuildings/query_scores/fc7/'
+#  simsmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0008_OxBuildings/learn/pairwise_matches_bin/'
+  nmsTh = -1 # set = -1 for no NMS
+elif 0:
+  # for full img matching case
+  method = 'full-img'
+  get_class_style = 'oxford'
+  matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/matches_refined/Jegou13_hesaff_heatmap'
+  imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/lists/Images.txt'
+  testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/lists/NdxesTest.txt'
+  outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/matches_top/Jegou13_hesaff_heatmap.txt'
+  #simsmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0008_OxBuildings/learn/pairwise_matches_bin/'
+  nmsTh = -1 # set = -1 for no NMS
+
 
 MAXBOXPERIMG = 10000
 
@@ -270,8 +352,15 @@ def readLines(fpath, lnos): # lnos must be 0 indexed
         lines.append(line)
   return list(np.array(lines)[order])
 
-def getClass(imid, imgslist): # imgid here must be 0-indexed!!!
-  return os.path.dirname(imgslist[imid])
+def getClass(imid, imgslist): 
+  # imgid here must be 0-indexed!!!
+  try:
+    if get_class_style == 'oxford':
+      return '_'.join(imgslist[imid].split('_')[:-1])
+    else:
+      return os.path.dirname(imgslist[imid])
+  except NameError: # get_class_style not defined
+    return os.path.dirname(imgslist[imid])
 
 def getImgId(idx):
   return idx / MAXBOXPERIMG
