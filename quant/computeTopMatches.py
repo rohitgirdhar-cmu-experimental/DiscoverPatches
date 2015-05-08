@@ -19,6 +19,9 @@ param1 = -0
 upto = 1 # 0=> select nth. 1=> select 1..nth (only valid for top matches, not random)
 nmsTh = 0.9 # set = -1 for no NMS
           # else, set a threshold between [0, 1]
+N_OUTPUT = 99999;
+NMATCHES_PER_PATCH = 99999;
+remove_exact_match = 1;
 
 if 0:
   matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/matches_refined/'
@@ -135,6 +138,7 @@ elif 0:
   nmsTh = -1 # set = -1 for no NMS
 elif 1:
   # OxBuildings,for patch case
+  #remove_exact_match = 0;
   method = 'patch'
   get_class_style = 'oxford'
   matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/matches_refined/test/'
@@ -147,6 +151,7 @@ elif 1:
   param1 = 0
 elif 0:
   # for full img matching case
+  remove_exact_match = 0;
   method = 'full-img'
   get_class_style = 'oxford'
   matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/matches_refined/fullImg'
@@ -158,24 +163,36 @@ elif 0:
 elif 0:
   # for full img matching case
   FULL_MATCH_WT = 3 # this x the score for full image
+#  remove_exact_match = 0;
   get_class_style = 'oxford'
   method = 'patch+full'
   matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/matches_refined/test/'
   fullmatchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/matches_refined/fullImg/'
   imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/lists/Images.txt'
   testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/lists/NdxesTest.txt'
-  outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/matches_top/testpatch.txt'
+  outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/matches_top/testfullpatch.txt'
   scoresdir = '/srv2/rgirdhar/Work/Datasets/processed/0008_OxBuildings/query_scores/fc7/'
 #  simsmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0008_OxBuildings/learn/pairwise_matches_bin/'
   nmsTh = -1 # set = -1 for no NMS
 elif 0:
   # for full img matching case
   method = 'full-img'
+  remove_exact_match = 0;
   get_class_style = 'oxford'
   matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/matches_refined/Jegou13_hesaff_heatmap'
   imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/lists/Images.txt'
   testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/lists/NdxesTest.txt'
   outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/matches_top/Jegou13_hesaff_heatmap.txt'
+  #simsmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0008_OxBuildings/learn/pairwise_matches_bin/'
+  nmsTh = -1 # set = -1 for no NMS
+elif 0:
+  # for full img matching case
+  method = 'full-img'
+  get_class_style = 'oxford'
+  matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/matches_refined/Jegou13_hesaff'
+  imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/lists/Images.txt'
+  testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/lists/NdxesTest.txt'
+  outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/matches_top/Jegou13_hesaff.txt'
   #simsmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0008_OxBuildings/learn/pairwise_matches_bin/'
   nmsTh = -1 # set = -1 for no NMS
 
@@ -247,7 +264,7 @@ def main():
     
     qboxes = [(i) * MAXBOXPERIMG + el + 1 for el in selected]
     fout.write('%s; ' % ','.join([str(el) for el in qboxes])) # query box
-    for match in matches[:20]:
+    for match in matches[:min(N_OUTPUT, len(matches))]:
       fout.write('%d:%f:%s ' % (match[1], match[0], 
             ','.join([str(el) for el in match[2]])))
     fout.write('\n')
@@ -269,7 +286,8 @@ def readMatches(matchesdir, i, boxids):
   allmatches = []
   for line in lines:
     matches = []
-    for el in line.strip().split()[:50]:
+    line_matches =  line.strip().split()
+    for el in line_matches[:min(NMATCHES_PER_PATCH, len(line_matches))]:
       el2 = el.split(':')
       matches.append((float(el2[1]), int(el2[0])))
     allmatches.append(matches)
@@ -284,7 +302,8 @@ def readMatchesWithFull(matchesdir, fullmatchesdir, i, boxids, FULL_MATCH_WT):
   allmatches = []
   for line in lines:
     matches = []
-    for el in line.strip().split()[:50]:
+    line_matches =  line.strip().split()
+    for el in line_matches[:min(NMATCHES_PER_PATCH, len(line_matches))]:
       el2 = el.split(':')
       matches.append((float(el2[1]), int(el2[0])))
     allmatches.append(matches)
@@ -293,7 +312,8 @@ def readMatchesWithFull(matchesdir, fullmatchesdir, i, boxids, FULL_MATCH_WT):
   lines = readLines(fpath, [0])
   for line in lines:
     matches = []
-    for el in line.strip().split()[:50]:
+    line_matches =  line.strip().split()
+    for el in line_matches[:min(NMATCHES_PER_PATCH, len(line_matches))]:
       el2 = el.split(':')
       matches.append((float(el2[1]) * FULL_MATCH_WT, int(el2[0])))
     allmatches.append(matches)
@@ -322,9 +342,10 @@ def mergeRanklists(allmatches):
 # matches must be [(score, imid)...]
 def computeScores(matches, imgid, imgslist):
   # remove the exact match
-  sameornot = [m[1] == imgid for m in matches]
-  if sum(sameornot) > 0:
-    del matches[np.where(sameornot)[0][0]]
+  if 'remove_exact_match' in globals() and remove_exact_match:
+    sameornot = [m[1] == imgid for m in matches]
+    if sum(sameornot) > 0:
+      del matches[np.where(sameornot)[0][0]]
 
   clses = [getClass(m[1] - 1, imgslist) for m in matches]
   cls = getClass(imgid - 1, imgslist)
