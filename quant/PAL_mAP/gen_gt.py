@@ -31,9 +31,11 @@ fout = open(outfpath, 'w')
 for id in testlist:
   imname = imlist[id - 1][:-4]
   cname = os.path.dirname(imname)
-  good = [el for el in imlist if el.startswith(cname)]
+  good = [el[:-4] for el in imlist if el.startswith(cname)]
   junk = []
+  ok = []
   writeOut(os.path.join(gtdir, imname + '_good.txt'), good)
+  writeOut(os.path.join(gtdir, imname + '_ok.txt'), ok)
   writeOut(os.path.join(gtdir, imname + '_junk.txt'), junk)
   fout.write('%s %s %d\n' % (imname, imname, id))
 fout.close()

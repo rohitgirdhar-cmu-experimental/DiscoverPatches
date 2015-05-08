@@ -4,10 +4,9 @@
 
 import os, sys, math, subprocess, random
 import numpy as np
-sys.path.append('../')
+sys.path.append('../../')
 from computeScores_DCG import computeDCG
-from nms import non_max_suppression_fast
-sys.path.append('../learn/multi_patch_weights/')
+sys.path.append('../../learn/multi_patch_weights/')
 from selectPatches import selectPatches
 import h5py
 
@@ -19,7 +18,7 @@ param1 = -0
 upto = 1 # 0=> select nth. 1=> select 1..nth (only valid for top matches, not random)
 nmsTh = 0.9 # set = -1 for no NMS
           # else, set a threshold between [0, 1]
-N_OUTPUT = 9999999;
+N_OUTPUT = 500;
 
 if 0:
   # for full img matching case

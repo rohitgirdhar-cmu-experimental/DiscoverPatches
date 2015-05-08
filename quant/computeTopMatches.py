@@ -19,9 +19,8 @@ param1 = -0
 upto = 1 # 0=> select nth. 1=> select 1..nth (only valid for top matches, not random)
 nmsTh = 0.9 # set = -1 for no NMS
           # else, set a threshold between [0, 1]
-N_OUTPUT = 99999;
+N_OUTPUT = 500;
 NMATCHES_PER_PATCH = 99999;
-remove_exact_match = 1;
 
 if 0:
   matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/matches_refined/'
@@ -118,7 +117,7 @@ elif 0:
   outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_top/Jegou13_hesaff.txt'
 #  simsmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/learn/pairwise_matches_bin/'
   nmsTh = -1 # set = -1 for no NMS
-elif 0:
+elif 1:
   # for full img matching case (Jegou - with hes aff features)
   method = 'full-img'
   matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_refined/Jegou13_hesaff_heatmap/'
@@ -136,9 +135,8 @@ elif 0:
   outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_top/Jegou13.txt'
   simsmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/learn/pairwise_matches_bin/'
   nmsTh = -1 # set = -1 for no NMS
-elif 1:
+elif 0:
   # OxBuildings,for patch case
-  #remove_exact_match = 0;
   method = 'patch'
   get_class_style = 'oxford'
   matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/matches_refined/test/'
@@ -151,7 +149,6 @@ elif 1:
   param1 = 0
 elif 0:
   # for full img matching case
-  remove_exact_match = 0;
   method = 'full-img'
   get_class_style = 'oxford'
   matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/matches_refined/fullImg'
@@ -163,7 +160,6 @@ elif 0:
 elif 0:
   # for full img matching case
   FULL_MATCH_WT = 3 # this x the score for full image
-#  remove_exact_match = 0;
   get_class_style = 'oxford'
   method = 'patch+full'
   matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/matches_refined/test/'
@@ -177,7 +173,6 @@ elif 0:
 elif 0:
   # for full img matching case
   method = 'full-img'
-  remove_exact_match = 0;
   get_class_style = 'oxford'
   matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/matches_refined/Jegou13_hesaff_heatmap'
   imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/lists/Images.txt'
@@ -342,12 +337,12 @@ def mergeRanklists(allmatches):
 # matches must be [(score, imid)...]
 def computeScores(matches, imgid, imgslist):
   # remove the exact match
-  if 'remove_exact_match' in globals() and remove_exact_match:
-    sameornot = [m[1] == imgid for m in matches]
-    if sum(sameornot) > 0:
-      del matches[np.where(sameornot)[0][0]]
+  matches2 = matches[:]
+  sameornot = [m[1] == imgid for m in matches2]
+  if sum(sameornot) > 0:
+    del matches2[np.where(sameornot)[0][0]]
 
-  clses = [getClass(m[1] - 1, imgslist) for m in matches]
+  clses = [getClass(m[1] - 1, imgslist) for m in matches2]
   cls = getClass(imgid - 1, imgslist)
   hits = [c == cls for c in clses]
   scores = []
