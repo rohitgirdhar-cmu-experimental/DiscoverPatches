@@ -18,6 +18,7 @@ function [top, pick] = esvm_nms(boxes, overlap)
 
 if isempty(boxes)
   top = [];
+  pick = [];
   return;
 end
 
