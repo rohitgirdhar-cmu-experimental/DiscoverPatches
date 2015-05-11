@@ -211,7 +211,7 @@ elif 0:
   #simsmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0008_OxBuildings/learn/pairwise_matches_bin/' # just dummy here
   nmsTh = -1 # set = -1 for no NMS
   param1 = -0.2
-elif 1:
+elif 0:
   # for full img matching case
   method = 'full-img'
   get_class_style = 'oxford'
@@ -228,7 +228,7 @@ elif 0:
   use_similarity_selection = False
   upto = 1
   takeTopN = 5
-  param1 = -0.0
+  param1 = -0.2
   if takeTopN > 1:
     NMATCHES_PER_PATCH = 50;
 
@@ -244,14 +244,15 @@ elif 0:
   scoresdir = '/srv2/rgirdhar/Work/Datasets/processed/0008_OxBuildings/query_scores/fc7/'
   simsmatdir = '/srv2/rgirdhar/Work/Datasets/processed/0008_OxBuildings/learn/pairwise_matches/'
   nmsTh = -1 # set = -1 for no NMS
-elif 0:
+elif 1:
   # for full img matching case
   method = 'full-img'
   get_class_style = 'oxford'
-  matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/matches_refined/Jegou13_hesaff_heatmap'
+  matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/matches_refined/Jegou13_hesaff_heatmap_final'
+  retrievallistpath =  '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/lists/All.txt'
   imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/lists/Images.txt'
   testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/lists/NdxesTest.txt'
-  outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/matches_top/Jegou13_hesaff_heatmap.txt'
+  outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/matches_top/Jegou13_hesaff_heatmap_final.txt'
   #simsmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0008_OxBuildings/learn/pairwise_matches_bin/'
   nmsTh = -1 # set = -1 for no NMS
 elif 0:
@@ -373,7 +374,10 @@ def readMatches(matchesdir, i, boxids, retlist):
     line_matches =  line.strip().split()
     for el in line_matches[:min(NMATCHES_PER_PATCH, len(line_matches))]:
       el2 = el.split(':')
-      matches.append((float(el2[1]), int(el2[0])))
+      if el2[0] < 0:
+        print 'Found match with invalid name', el2[0]
+      else:
+        matches.append((float(el2[1]), int(el2[0])))
     allmatches.append(matches)
   matches = mergeRanklists(allmatches, retlist)
   return matches
@@ -419,6 +423,10 @@ def mergeRanklists(allmatches, retlist):
   for matches in allmatches:
     for match in matches:
       imid = getImgId(match[1])
+      if imid < 0:
+        print 'Some error.. got imid', imid
+        print 'continuing'
+        continue
       #if imid not in imid2score.keys():
       #  imid2score[imid] = match[0]
       #  imid2feats[imid] = [match[1]]
