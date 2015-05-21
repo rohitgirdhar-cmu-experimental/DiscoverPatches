@@ -12,12 +12,18 @@ if 0:
   testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/split/All.txt'
   outdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/matches_refined'
 elif 0:
+  # for the full img case
+  matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/aux_matches/matches_fullImg/matches'
+  imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/ImgsList.txt'
+  testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/split/All.txt'
+  outdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/aux_matches/matches_fullImg/matches_refined'
+elif 0:
   # patches, train
   matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches/train'
   imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/lists/Images.txt'
   testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/lists/NdxesPeopleTrain.txt'
   outdir = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_refined/train/'
-elif 1:
+elif 0:
   # patches, test
   matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches/test'
   imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/lists/Images.txt'
@@ -29,12 +35,31 @@ elif 0:
   imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/lists/Images.txt'
   testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/lists/NdxesPeopleTest.txt'
   outdir = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_refined/fullImg/'
-else:
-  # for the full img case
-  matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/aux_matches/matches_fullImg/matches'
-  imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/ImgsList.txt'
-  testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/split/All.txt'
-  outdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/aux_matches/matches_fullImg/matches_refined'
+elif 0:
+  # hussian patches, train
+  matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0007_HussianHotels/matches/train'
+  imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0007_HussianHotels/lists/Images.txt'
+  testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0007_HussianHotels/lists/NdxesTrain.txt'
+  outdir = '/home/rgirdhar/data/Work/Datasets/processed/0007_HussianHotels/matches_refined/train/'
+elif 0:
+  # hussian patches, test
+  matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0007_HussianHotels/matches/test'
+  imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0007_HussianHotels/lists/Images.txt'
+  testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0007_HussianHotels/lists/NdxesTest.txt'
+  outdir = '/home/rgirdhar/data/Work/Datasets/processed/0007_HussianHotels/matches_refined/test/'
+elif 0:
+  # hussian full, test
+  matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0007_HussianHotels/matches/fullImg'
+  imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0007_HussianHotels/lists/Images.txt'
+  testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0007_HussianHotels/lists/NdxesTest.txt'
+  outdir = '/home/rgirdhar/data/Work/Datasets/processed/0007_HussianHotels/matches_refined/fullImg/'
+elif 1:
+  # hussian patches, test
+  matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/matches/all/'
+  imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/lists/Images.txt'
+  testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/lists/NdxesTest.txt'
+  outdir = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/matches_refined/test/'
+
 
 
 def main():

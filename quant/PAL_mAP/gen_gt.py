@@ -19,10 +19,17 @@ def writeOut(fpath, lst):
   f.write('\n'.join(lst))
   f.close()
 
-gtdir = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/lists/mAP_eval/gtfiles/'
-imlistpath = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/lists/Images.txt'
-outfpath = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/lists/mAP_eval/QueryList.txt'
-testNdxesFile = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/lists/NdxesPeopleTest.txt'
+if 0:
+  gtdir = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/lists/mAP_eval/gtfiles/'
+  imlistpath = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/lists/Images.txt'
+  outfpath = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/lists/mAP_eval/QueryList.txt'
+  testNdxesFile = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/lists/NdxesPeopleTest.txt'
+elif 1:
+  gtdir = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/lists/mAP_eval_train/gtfiles/'
+  imlistpath = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/lists/Images.txt'
+  outfpath = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/lists/mAP_eval_train/QueryList.txt'
+  testNdxesFile = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/lists/NdxesPeopleTrain.txt'
+
 
 imlist = readList(imlistpath)
 testlist = [int(el) for el in readList(testNdxesFile)]

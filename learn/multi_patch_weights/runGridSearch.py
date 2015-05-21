@@ -10,7 +10,7 @@ simmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/learn/p
 scoresdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/learn/train_crossval_scores_bin/'
 trainidxs = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/lists/NdxesPeopleTrain.txt'
 matchesdir = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/matches/train/'
-N = 3;
+N = 5;
 MAXBOXPERIMG = 10000
 
 with open(imgslistpath) as f:
@@ -21,7 +21,7 @@ with open(trainidxs) as f:
 def main():
   maxscore = -1
   maxscore_param = -1
-  params =  np.arange(-5, 5, 0.1)
+  params =  np.arange(-5, 5, 0.2)
   tot = evalParamValue(params)
   print 'top: ', params[np.argmax(tot)]
 
@@ -87,7 +87,7 @@ def computeScoresDCG_wrapper(matches, imgid, imgslist):
   clses = [getClass(m[1] - 1, imgslist) for m in matches]
   cls = getClass(imgid - 1, imgslist)
   hits = [c == cls for c in clses]
-  return computeDCG(hits[:10], 10)
+  return computeDCG(hits[:20], 20)
 
 def computeScoresMP3_wrapper(matches, imgid, imgslist):
   # remove the exact match

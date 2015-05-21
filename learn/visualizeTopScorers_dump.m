@@ -2,20 +2,22 @@ function visualizeTopScorers_dump()
 % dump top matches into a human readable text file to easily 
 % generate webpages using PyHTMLWriter
 %scoresdir = '/srv2/rgirdhar/Work/Datasets/processed/0004_PALn1KHayesDistractor/learn_good_patches/scratch/all_query_scores/query_scores_rbf_10K/';
-scoresdir = '/srv2/rgirdhar/Work/Datasets/processed/0004_PALn1KHayesDistractor/learn_good_patches/scratch/all_query_scores/query_scores_gt/';
-outdir = '/srv2/rgirdhar/Work/Datasets/processed/0004_PALn1KHayesDistractor/learn_good_patches/scratch/top_patches_text';
+% method = 'svr_poly_10000'
+method = 'svr_linear_FullData_liblinear_pool5'
+scoresdir = ['/srv2/rgirdhar/Work/Datasets/processed/0004_PALn1KHayesDistractor/learn_good_patches/scratch/all_query_scores/' method, '/'];
+outdir = ['/srv2/rgirdhar/Work/Datasets/processed/0004_PALn1KHayesDistractor/learn_good_patches/scratch/all_top_patches/', method];
 boxesdir = '/srv2/rgirdhar/Work/Datasets/processed/0004_PALn1KHayesDistractor/selsearch_boxes';
 imgslistfile = '/srv2/rgirdhar/Work/Datasets/processed/0004_PALn1KHayesDistractor/ImgsList.txt';
 imgsdir = '/srv2/rgirdhar/Work/Datasets/processed/0004_PALn1KHayesDistractor/corpus';
 matchesdir = '/srv2/rgirdhar/Work/Datasets/processed/0004_PALn1KHayesDistractor/matches_refined';
-detail = 1;
+detail = 0;
 
 f = fopen(imgslistfile);
 imgslist = textscan(f, '%s');
 imgslist = imgslist{1};
 fclose(f);
 
-for i = 1 : 1 : 120
+for i = 121 : 1 : 237
   thisoutfpath = fullfile(outdir, [num2str(i) '.txt']);
 
   if exist(thisoutfpath, 'file') || exist([thisoutfpath '.lock'], 'dir')
