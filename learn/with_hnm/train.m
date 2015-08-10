@@ -9,7 +9,7 @@ if 0
   featdir = ['/IUS/homes4/rohytg/work/data/002_ExtendedPAL/features/CNN_' FEAT '_mats'];
   scoresdir = '/IUS/homes4/rohytg/work/data/001_PALAnd1KHayesDistractor/matches_scores';
   modelfpath = ['model_' FEAT '.mat'];
-else
+elseif 0
   FEAT = 'fc7_PeopleOnly';
   FEATDIM = 4096;
   RANDSAMPLE = 1000;
@@ -19,6 +19,16 @@ else
   scoresdir = '/IUS/homes4/rohytg/work/data/002_ExtendedPAL/matches_scores';
   modelfpath = ['/IUS/homes4/rohytg/work/data/002_ExtendedPAL/models/model_' FEAT '.mat'];
   trainNdxesFpath = '/IUS/homes4/rohytg/work/data/002_ExtendedPAL/lists/NdxesPeopleTrain.txt';
+elseif 1
+  FEAT = 'fc7_TrainOnly';
+  FEATDIM = 4096;
+  RANDSAMPLE = 400;
+  addpath('bin/');
+  %featdir = ['/IUS/homes4/rohytg/work/data/001_PALAnd1KHayesDistractor/features/CNN_' FEAT '_mats'];
+  featdir = ['/IUS/homes4/rohytg/work/data/003_HussianHotels/features/CNN_' FEAT '_mats'];
+  scoresdir = '/IUS/homes4/rohytg/work/data/003_HussianHotels/matches_scores/train/';
+  modelfpath = ['/IUS/homes4/rohytg/work/data/003_HussianHotels/models/model_' FEAT '.mat'];
+  trainNdxesFpath = '/IUS/homes4/rohytg/work/data/003_HussianHotels/lists/NdxesPeopleTrain+.txt';
 end
 
 trainNdxes = readList2(trainNdxesFpath);

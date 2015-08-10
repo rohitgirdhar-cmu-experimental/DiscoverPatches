@@ -3,11 +3,16 @@ if 0
   imgslistfile = '~/work/data/001_PALAnd1KHayesDistractor/ImgsList.txt';
   txtfeatdir = '~/work/data/001_PALAnd1KHayesDistractor/features/CNN_pool5_text';
   outdir = '~/work/data/001_PALAnd1KHayesDistractor/features/CNN_pool5_mats';
-else
+elseif 0
   imgslistfile = '~/work/data/002_ExtendedPAL/lists/Images.txt';
   txtfeatdir = '~/work/data/002_ExtendedPAL/features/CNN/CNN_fc7_PeopleOnly/';
   outdir = '~/work/data/002_ExtendedPAL/features/CNN/CNN_fc7_PeopleOnly_mats';
   peopleIdxsFpath = '~/work/data/002_ExtendedPAL/lists/NdxesPeople.txt';
+elseif 1
+  imgslistfile = '~/work/data/003_HussianHotels/lists/Images.txt';
+  txtfeatdir = '~/work/data/003_HussianHotels/features/CNN_fc7_TrainOnly/';
+  outdir = '~/work/data/003_HussianHotels/features/CNN_fc7_TrainOnly_mats';
+  peopleIdxsFpath = '~/work/data/003_HussianHotels/lists/NdxesTrain.txt';
 end
 
 imgslist = readList(imgslistfile);
