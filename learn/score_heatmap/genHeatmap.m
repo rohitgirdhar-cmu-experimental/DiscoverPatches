@@ -7,21 +7,50 @@ if 0
   scoresdir = '/srv2/rgirdhar/Work/Datasets/processed/0004_PALn1KHayesDistractor/matches_scores/';
   outdir = '/srv2/rgirdhar/Work/Datasets/processed/0004_PALn1KHayesDistractor/scores_heatmap/full/';
   testlistfile = '/srv2/rgirdhar/Work/Datasets/processed/0004_PALn1KHayesDistractor/split/TrainList_120.txt';
-elseif 1
+elseif 0
   imgslistfile = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/lists/Images.txt';
   imgsdir = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/corpus/';
   boxesdir = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/selsearch_boxes/';
   scoresdir = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/query_scores/fc7_PeopleOnly/';
   outdir = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/scores_heatmap/query/full/';
   testlistfile = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/lists/NdxesPeopleTest.txt';
-else
+elseif 0
   imgslistfile = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/lists/Images.txt';
   imgsdir = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/corpus/';
   boxesdir = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/selsearch_boxes/';
   scoresdir = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/matches_scores/';
   outdir = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/scores_heatmap/train/full/';
   testlistfile = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/lists/NdxesPeopleTrain.txt';
+elseif 1
+  imgslistfile = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/lists/Images.txt';
+  imgsdir = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/corpus/';
+  boxesdir = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/selsearch_boxes/';
+  scoresdir = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/learn/train_crossval_scores/';
+  outdir = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/scores_heatmap/crossval/full/';
+  testlistfile = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/lists/NdxesPeopleTrain.txt';
+elseif 0
+  imgslistfile = '/srv2/rgirdhar/Work/Datasets/processed/0007_HussianHotels/lists/Images.txt';
+  imgsdir = '/srv2/rgirdhar/Work/Datasets/processed/0007_HussianHotels/corpus/';
+  boxesdir = '/srv2/rgirdhar/Work/Datasets/processed/0007_HussianHotels/selsearch_boxes/';
+  scoresdir = '/srv2/rgirdhar/Work/Datasets/processed/0007_HussianHotels/matches_scores/train/';
+  outdir = '/srv2/rgirdhar/Work/Datasets/processed/0007_HussianHotels/scores_heatmap/train/full/';
+  testlistfile = '/srv2/rgirdhar/Work/Datasets/processed/0007_HussianHotels/lists/NdxesTrain.txt';
+elseif 0
+  imgslistfile = '/srv2/rgirdhar/Work/Datasets/processed/0007_HussianHotels/lists/Images.txt';
+  imgsdir = '/srv2/rgirdhar/Work/Datasets/processed/0007_HussianHotels/corpus/';
+  boxesdir = '/srv2/rgirdhar/Work/Datasets/processed/0007_HussianHotels/selsearch_boxes/';
+  scoresdir = '/srv2/rgirdhar/Work/Datasets/processed/0007_HussianHotels/query_scores/fc7_TrainOnly/';
+  outdir = '/srv2/rgirdhar/Work/Datasets/processed/0007_HussianHotels/scores_heatmap/query/full/';
+  testlistfile = '/srv2/rgirdhar/Work/Datasets/processed/0007_HussianHotels/lists/NdxesPeopleTest.txt';
+elseif 0
+  imgslistfile = '/srv2/rgirdhar/Work/Datasets/processed/0008_OxBuildings/lists/Images.txt';
+  imgsdir = '/srv2/rgirdhar/Work/Datasets/processed/0008_OxBuildings/corpus/';
+  boxesdir = '/srv2/rgirdhar/Work/Datasets/processed/0008_OxBuildings/selsearch_boxes/';
+  scoresdir = '/srv2/rgirdhar/Work/Datasets/processed/0008_OxBuildings/query_scores/fc7/';
+  outdir = '/srv2/rgirdhar/Work/Datasets/processed/0008_OxBuildings/scores_heatmap/query/full/';
+  testlistfile = '/srv2/rgirdhar/Work/Datasets/processed/0008_OxBuildings/lists/NdxesTest.txt';
 end
+
 
 imgslist = readImgsList(imgslistfile);
 trainidxs = readNumList(testlistfile);

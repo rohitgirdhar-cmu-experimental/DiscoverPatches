@@ -12,15 +12,23 @@ if 0:
   boxesdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/selsearch_boxes/'
   outdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/matches_scores'
   MIN_DIM_BOX = 0.05 # set score for any box smaller than MIN_DIM_BOX*IM_WID x MIN_DIM_BOX*IM_HT to 0
-else:
+elif 0:
   datadir = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/corpus/'
   matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_refined/train/'
   imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/lists/Images.txt'
   testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/lists/NdxesPeopleTrain.txt'
   boxesdir = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/selsearch_boxes/'
-  outdir = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_scores'
+  outdir = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_scores/train/'
   MIN_DIM_BOX = 0.05 # set score for any box smaller than MIN_DIM_BOX*IM_WID x MIN_DIM_BOX*IM_HT to 0
- 
+elif 1:
+  datadir = '/home/rgirdhar/data/Work/Datasets/processed/0007_HussianHotels/corpus/'
+  matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0007_HussianHotels/matches_refined/train/'
+  imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0007_HussianHotels/lists/Images.txt'
+  testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0007_HussianHotels/lists/NdxesTrain.txt'
+  boxesdir = '/home/rgirdhar/data/Work/Datasets/processed/0007_HussianHotels/selsearch_boxes/'
+  outdir = '/home/rgirdhar/data/Work/Datasets/processed/0007_HussianHotels/matches_scores/train/'
+  MIN_DIM_BOX = 0.05 # set score for any box smaller than MIN_DIM_BOX*IM_WID x MIN_DIM_BOX*IM_HT to 0
+
 
 def main():
   # read images list

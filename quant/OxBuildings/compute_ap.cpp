@@ -52,11 +52,14 @@ compute_ap(const set<string>& pos, const set<string>& amb, const vector<string>&
 }
 
 float
-run_compute_ap(string gtq, const vector<string>& ranked_list)
+run_compute_ap(string gtq, const vector<string>& ranked_list, bool ignore_junk_images = true)
 {
   set<string> good_set = vector_to_set( load_list(gtq + "_good.txt") );
   set<string> ok_set = vector_to_set( load_list(gtq + "_ok.txt") );
   set<string> junk_set = vector_to_set( load_list(gtq + "_junk.txt") );
+  if (!ignore_junk_images) {
+    junk_set.clear();
+  }
 
   set<string> pos_set;
   pos_set.insert(good_set.begin(), good_set.end());
@@ -107,11 +110,18 @@ void readOutputs(string fpath, const vector<string>& imgslist, map<string, vecto
   fin.close();
 }
 
-int main(int argc, char* argv[1]) {
+int main(int argc, char* argv[]) {
   string gtdir = string(argv[1]);
   string qlistfpath = string(argv[2]);
   string outfile = string(argv[3]);
   vector<string> imgslist = load_list(argv[4]);
+  bool ignore_junk_images = true;
+  if (argc > 5) {
+    if (argv[5][0] == '1') {
+      cout << "NOt Ignoring junk" << endl;
+      ignore_junk_images = false;
+    }
+  }
 
   map<string, vector<string>> outputs;
   readOutputs(outfile, imgslist, outputs);
@@ -121,7 +131,7 @@ int main(int argc, char* argv[1]) {
   float map = 0;
   while (fin >> qpath >> temp >> qid) {
     string gtq = gtdir + "/" + qpath;
-    float ap = run_compute_ap(gtq, outputs[temp]);
+    float ap = run_compute_ap(gtq, outputs[temp], ignore_junk_images);
     map += ap;
     n += 1;
   }

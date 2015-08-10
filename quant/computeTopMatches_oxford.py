@@ -24,6 +24,7 @@ use_similarity_selection = False # = True for using the similarity scores for mu
 N_OUTPUT = 99999999;
 NMATCHES_PER_PATCH = 999999;
 
+gtfiles_ndxes = '/srv2/rgirdhar/Work/Datasets/processed/0008_OxBuildings/lists/gtfiles_ndxes/'
 if 0:
   matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0004_PALn1KHayesDistractor/matches_refined/'
   selboxdir = '/srv2/rgirdhar/Work/Datasets/processed/0004_PALn1KHayesDistractor/selsearch_boxes/'
@@ -227,7 +228,7 @@ elif 0:
   use_similarity_selection = False
   upto = 1
   takeTopN = 5
-  param1 = -0.0
+  param1 = -0.2
   if takeTopN > 1:
     NMATCHES_PER_PATCH = 50;
 
@@ -243,14 +244,15 @@ elif 0:
   scoresdir = '/srv2/rgirdhar/Work/Datasets/processed/0008_OxBuildings/query_scores/fc7/'
   simsmatdir = '/srv2/rgirdhar/Work/Datasets/processed/0008_OxBuildings/learn/pairwise_matches/'
   nmsTh = -1 # set = -1 for no NMS
-elif 0:
+elif 1:
   # for full img matching case
   method = 'full-img'
   get_class_style = 'oxford'
-  matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/matches_refined/Jegou13_hesaff_heatmap'
+  matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/matches_refined/Jegou13_hesaff_heatmap_final'
+  retrievallistpath =  '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/lists/All.txt'
   imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/lists/Images.txt'
   testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/lists/NdxesTest.txt'
-  outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/matches_top/Jegou13_hesaff_heatmap.txt'
+  outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/matches_top/Jegou13_hesaff_heatmap_final.txt'
   #simsmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0008_OxBuildings/learn/pairwise_matches_bin/'
   nmsTh = -1 # set = -1 for no NMS
 elif 0:
@@ -262,16 +264,6 @@ elif 0:
   testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/lists/NdxesTest.txt'
   outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/matches_top/Jegou13_hesaff.txt'
   #simsmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0008_OxBuildings/learn/pairwise_matches_bin/'
-  nmsTh = -1 # set = -1 for no NMS
-elif 1:
-  # for full img matching case (Jegou - with hes aff features)
-  method = 'full-img'
-  matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_withResize/matches_heatmap_0.5'
-  retrievallistpath =  '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/lists/NdxesTest.txt'
-  imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/lists/Images.txt'
-  testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/lists/NdxesPeopleTest.txt'
-  outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_top/Jegou13_hesaff_heatmap.txt'
-  simsmatdir = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/learn/pairwise_matches/'
   nmsTh = -1 # set = -1 for no NMS
 
 
@@ -382,7 +374,10 @@ def readMatches(matchesdir, i, boxids, retlist):
     line_matches =  line.strip().split()
     for el in line_matches[:min(NMATCHES_PER_PATCH, len(line_matches))]:
       el2 = el.split(':')
-      matches.append((float(el2[1]), int(el2[0])))
+      if el2[0] < 0:
+        print 'Found match with invalid name', el2[0]
+      else:
+        matches.append((float(el2[1]), int(el2[0])))
     allmatches.append(matches)
   matches = mergeRanklists(allmatches, retlist)
   return matches
@@ -428,6 +423,10 @@ def mergeRanklists(allmatches, retlist):
   for matches in allmatches:
     for match in matches:
       imid = getImgId(match[1])
+      if imid < 0:
+        print 'Some error.. got imid', imid
+        print 'continuing'
+        continue
       #if imid not in imid2score.keys():
       #  imid2score[imid] = match[0]
       #  imid2feats[imid] = [match[1]]
@@ -439,6 +438,12 @@ def mergeRanklists(allmatches, retlist):
   res = [(m[1], m[0], imid2feats[m[0]]) for m in res]
   return res
 
+def readList(fpath):
+  f = open(fpath)
+  res = [int(el) for el in f.read().splitlines()]
+  f.close()
+  return res
+
 # matches must be [(score, imid)...]
 def computeScores(matches, imgid, imgslist):
   # remove the exact match
@@ -446,10 +451,22 @@ def computeScores(matches, imgid, imgslist):
   sameornot = [m[1] == imgid for m in matches2]
   if sum(sameornot) > 0:
     del matches2[np.where(sameornot)[0][0]]
+  
+  # replace with something to generate for oxford
+  # use good and ok, ignore the junk images
+  goodlist = readList(os.path.join(gtfiles_ndxes, str(imgid) + '_good.txt'))
+  oklist = readList(os.path.join(gtfiles_ndxes, str(imgid) + '_ok.txt'))
+  junklist = readList(os.path.join(gtfiles_ndxes, str(imgid) + '_junk.txt'))
 
-  clses = [getClass(m[1] - 1, imgslist) for m in matches2]
-  cls = getClass(imgid - 1, imgslist)
-  hits = [c == cls for c in clses]
+  hits = []
+  for i in range(len(matches2)):
+    el = matches2[i][1]
+    if el in junklist:
+      continue
+    elif el in goodlist or el in oklist:
+      hits.append(1)
+    else:
+      hits.append(0)
   scores = []
   for i in [1,3,5,10,20]: # for mP
     scores.append(float(sum(hits[:i])) / i)

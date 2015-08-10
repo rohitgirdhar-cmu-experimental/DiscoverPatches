@@ -9,8 +9,8 @@ def selectPatches(unary, sims, param1, nsel, noMatchesExist):
   assert(np.size(unary) == np.shape(sims)[0] == np.shape(sims)[1])
   # sims is already normalized to between 0 and 1
   # normalize the unary to between 0 and 1
-#  unary = unary - min(unary)
-#  unary = unary / (max(unary) + 0.001)
+  unary = unary - min(unary)
+  unary = unary / (max(unary) + 0.001)
   toppatches = np.argsort(-np.array(unary))
   nPatches = np.shape
   sel = []
