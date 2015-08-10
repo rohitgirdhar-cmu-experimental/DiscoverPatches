@@ -1,5 +1,8 @@
 function train()
 % read all data
+feat_file_type = 'mat'; % or could be h5
+feat_file_naming = 'indexed'; % or could be imname
+addpath('bin/');
 if 0
   FEAT = 'pool5';
   FEATDIM = 9216;
@@ -19,7 +22,7 @@ elseif 0
   scoresdir = '/IUS/homes4/rohytg/work/data/002_ExtendedPAL/matches_scores';
   modelfpath = ['/IUS/homes4/rohytg/work/data/002_ExtendedPAL/models/model_' FEAT '.mat'];
   trainNdxesFpath = '/IUS/homes4/rohytg/work/data/002_ExtendedPAL/lists/NdxesPeopleTrain.txt';
-elseif 1
+elseif 0
   FEAT = 'fc7_TrainOnly';
   FEATDIM = 4096;
   RANDSAMPLE = 400;
@@ -29,17 +32,47 @@ elseif 1
   scoresdir = '/IUS/homes4/rohytg/work/data/003_HussianHotels/matches_scores/train/';
   modelfpath = ['/IUS/homes4/rohytg/work/data/003_HussianHotels/models/model_' FEAT '.mat'];
   trainNdxesFpath = '/IUS/homes4/rohytg/work/data/003_HussianHotels/lists/NdxesPeopleTrain+.txt';
+elseif 1
+  feat_file_type = 'h5';
+  feat_file_naming = 'imname';
+  FEAT = 'fc7';
+  FEATDIM = 4096;
+  RANDSAMPLE = 1000;
+  %featdir = ['/IUS/homes4/rohytg/work/data/001_PALAnd1KHayesDistractor/features/CNN_' FEAT '_mats'];
+  featdir = ['/IUS/vmr105/rohytg/data/005_ExtendedPAL2_moreTest/features/CNN/fc7_train/'];
+  scoresdir = '/IUS/vmr105/rohytg/data/005_ExtendedPAL2_moreTest/matches_scores/CNN/train/';
+  modelfpath = ['/IUS/vmr105/rohytg/data/005_ExtendedPAL2_moreTest/models/model_fc7.mat'];
+  trainNdxesFpath = '/IUS/vmr105/rohytg/data/005_ExtendedPAL2_moreTest/lists/NdxesPeopleTrain.txt';
+  imgslistfpath = '/IUS/vmr105/rohytg/data/005_ExtendedPAL2_moreTest/lists/Images.txt';
 end
 
-trainNdxes = readList2(trainNdxesFpath);
+if exist('imgslistfpath', 'var')
+  imgslist = readList(imgslistfpath, '%s');
+end
+
+trainNdxes = readList(trainNdxesFpath, '%d');
 
 allfeats = sparse(0, FEATDIM);
 allscores = zeros(0, 1);
 for i = trainNdxes(:)'
-  featFpath = fullfile(featdir, [num2str(i) '.mat']);
+  if strcmp(feat_file_type, 'mat')
+    fext = '.mat';
+  else
+    fext = '.h5';
+  end
+  if strcmp(feat_file_naming, 'indexed')
+    featFpath = fullfile(featdir, [num2str(i) fext]);
+  else
+    featFpath = fullfile(featdir, strrep(imgslist{i}, '.jpg', fext));
+  end
   clear feats;
   try
-    load(featFpath, 'feats');
+    if strcmp(feat_file_type, 'mat')
+      load(featFpath, 'feats'); % by default it stores each features as a column
+    else
+      feats = h5read(featFpath, '/feats');
+      feats = double(feats');
+    end
     scores = dlmread(fullfile(scoresdir, [num2str(i) '.txt']));
   catch
     fprintf(2, 'Unable to read %s\n', featFpath);
@@ -74,9 +107,9 @@ llm.mu = mu;
 llm.sigma = sigma;
 save(modelfpath, 'llm');
 
-function lst = readList2(fpath)
+function lst = readList(fpath, formatstr)
 f = fopen(fpath);
-lst = textscan(f, '%d');
+lst = textscan(f, formatstr);
 lst = lst{1};
 fclose(f);
 
