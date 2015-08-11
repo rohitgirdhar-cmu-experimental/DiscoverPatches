@@ -53,12 +53,24 @@ elif 0:
   imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0007_HussianHotels/lists/Images.txt'
   testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0007_HussianHotels/lists/NdxesTest.txt'
   outdir = '/home/rgirdhar/data/Work/Datasets/processed/0007_HussianHotels/matches_refined/fullImg/'
-elif 1:
+elif 0:
   # hussian patches, test
   matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/matches/all/'
   imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/lists/Images.txt'
   testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/lists/NdxesTest.txt'
   outdir = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/matches_refined/test/'
+elif 0:
+  # extPAL2 patches, train
+  matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0010_ExtendedPAL_moreTest/matches/CNN/train/'
+  imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0010_ExtendedPAL_moreTest/lists/Images.txt'
+  testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0010_ExtendedPAL_moreTest/lists/NdxesPeopleTrain.txt'
+  outdir = '/home/rgirdhar/data/Work/Datasets/processed/0010_ExtendedPAL_moreTest/matches_refined/CNN/train/'
+elif 1:
+  # extPAL2 patches, train, Jegou matches
+  matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0010_ExtendedPAL_moreTest/matches/Jegou13/train/'
+  imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0010_ExtendedPAL_moreTest/lists/Images.txt'
+  testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0010_ExtendedPAL_moreTest/lists/NdxesPeopleTrain.txt'
+  outdir = '/home/rgirdhar/data/Work/Datasets/processed/0010_ExtendedPAL_moreTest/matches_refined/Jegou13/train/'
 
 
 
@@ -81,7 +93,9 @@ def main():
       for line in f.read().splitlines():
         matches = line.split()
         selected_imid = []
-        for match in matches:
+        # limitting by 500 because CNN method we store only 500
+        # matches, so keep uniformity between this and Jegou
+        for match in matches[:500]:
           idx, score = match.split(':')
           idx = int(idx)
           score = float(score)
