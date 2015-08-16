@@ -21,7 +21,7 @@ elseif 0
   scoresdir = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/matches_scores/';
   outdir = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/scores_heatmap/train/full/';
   testlistfile = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/lists/NdxesPeopleTrain.txt';
-elseif 1
+elseif 0
   imgslistfile = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/lists/Images.txt';
   imgsdir = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/corpus/';
   boxesdir = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/selsearch_boxes/';
@@ -49,6 +49,27 @@ elseif 0
   scoresdir = '/srv2/rgirdhar/Work/Datasets/processed/0008_OxBuildings/query_scores/fc7/';
   outdir = '/srv2/rgirdhar/Work/Datasets/processed/0008_OxBuildings/scores_heatmap/query/full/';
   testlistfile = '/srv2/rgirdhar/Work/Datasets/processed/0008_OxBuildings/lists/NdxesTest.txt';
+elseif 1
+  imgslistfile = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/lists/Images.txt';
+  imgsdir = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/corpus_resized/';
+  boxesdir = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/features/selsearch_boxes/';
+  scoresdir = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/query_scores/CNN/test/';
+  outdir = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/scores_heatmap/CNN/test/full/';
+  testlistfile = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/lists/NdxesPeopleTest.txt';
+elseif 0
+  imgslistfile = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/lists/Images.txt';
+  imgsdir = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/corpus_resized/';
+  boxesdir = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/features/selsearch_boxes/';
+  scoresdir = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/matches_scores/Jegou13/train/';
+  outdir = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/scores_heatmap/Jegou13/train/full/';
+  testlistfile = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/lists/NdxesPeopleTrain.txt';
+elseif 0
+  imgslistfile = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/lists/Images.txt';
+  imgsdir = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/corpus_resized/';
+  boxesdir = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/features/selsearch_boxes/';
+  scoresdir = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/matches_scores/CNN/train/';
+  outdir = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/scores_heatmap/CNN/train/full/';
+  testlistfile = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/lists/NdxesPeopleTrain.txt';
 end
 
 
