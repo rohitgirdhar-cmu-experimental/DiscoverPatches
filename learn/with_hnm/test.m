@@ -25,13 +25,22 @@ elseif 0
   imgslistfile = '~/work/data/004_OxBuildings/lists/Images.txt';
   modelpath = ['/IUS/homes4/rohytg/work/data/002_ExtendedPAL/models/model_' FEAT '_PeopleOnly.mat'];
   testimgidspath = '/IUS/homes4/rohytg/work/data/004_OxBuildings/lists/NdxesTest.txt';
-elseif 1
+elseif 0
   FEAT = 'fc7_test_hdf5';
   featdir = ['~/work/data/002_ExtendedPAL/features/CNN/CNN_' FEAT];
   outdir = ['~/work/data/002_ExtendedPAL/query_scores/' FEAT];
   imgslistfile = '~/work/data/002_ExtendedPAL/lists/Images.txt';
   modelpath = ['/IUS/homes4/rohytg/work/data/002_ExtendedPAL/models/model_fc7_PeopleOnly.mat'];
   testimgidspath = '/IUS/homes4/rohytg/work/data/002_ExtendedPAL/lists/NdxesPeopleTest.txt';
+  feat_file_type = 'hdf5';
+elseif 1
+  featdir = ['/IUS/vmr105/rohytg/data/005_ExtendedPAL2_moreTest/features/CNN/fc7_test/'];
+%  outdir = ['/IUS/vmr105/rohytg/data/005_ExtendedPAL2_moreTest/query_scores/CNN/test/'];
+  outdir = ['/IUS/vmr105/rohytg/data/005_ExtendedPAL2_moreTest/query_scores/Jegou13/test/'];
+  imgslistfile = '/IUS/vmr105/rohytg/data/005_ExtendedPAL2_moreTest/lists/Images.txt';
+%  modelpath = ['/IUS/vmr105/rohytg/data/005_ExtendedPAL2_moreTest/models/model_fc7_cnnScoring.mat'];
+  modelpath = ['/IUS/vmr105/rohytg/data/005_ExtendedPAL2_moreTest/models/model_fc7_Jegou13Scoring.mat'];
+  testimgidspath = '/IUS/vmr105/rohytg/data/005_ExtendedPAL2_moreTest/lists/NdxesPeopleTest.txt';
   feat_file_type = 'hdf5';
 end
 
@@ -49,7 +58,7 @@ imgslist = imgslist{1};
 for i = testimgids(:)'
   im = imgslist{i};
   if feat_file_type == 'hdf5'
-    feats = hdf5read(fullfile(featdir, strrep(im, '.jpg', '.h5')), 'feats')';
+    feats = h5read(fullfile(featdir, strrep(im, '.jpg', '.h5')), '/feats')';
   else
     feats = dlmread(fullfile(featdir, strrep(im, '.jpg', '.txt')));
   end
