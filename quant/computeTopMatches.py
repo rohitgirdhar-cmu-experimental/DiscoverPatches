@@ -53,7 +53,7 @@ elif 0:
   retrievallistpath =  '/home/rgirdhar/data/Work/Datasets/processed/0010_ExtendedPAL_moreTest/lists/NdxesTest.txt'
   imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0010_ExtendedPAL_moreTest/lists/Images.txt'
   testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0010_ExtendedPAL_moreTest/lists/NdxesPeopleTest.txt'
-  outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_top/fullImg.txt'
+  outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0010_ExtendedPAL_moreTest/matches_top/fullImg.txt'
 #  simsmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/learn/pairwise_matches_bin/'
   nmsTh = -1 # set = -1 for no NMS
 elif 0:
@@ -76,9 +76,9 @@ elif 0:
 elif 1:
   # for patch case
   method = 'patch'
-  use_similarity_selection = False
+  use_similarity_selection = True
   upto = 1
-  takeTopN = 1
+  takeTopN = 5
   param1 = -0.2
   if takeTopN > 1:
     NMATCHES_PER_PATCH = 50;
@@ -88,7 +88,7 @@ elif 1:
   retrievallistpath =  '/home/rgirdhar/data/Work/Datasets/processed/0010_ExtendedPAL_moreTest/lists/NdxesTest.txt'
   outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0010_ExtendedPAL_moreTest/matches_top/test_final_patch.txt'
   scoresdir = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/query_scores/CNN/test/'
-#  simsmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/learn/pairwise_matches_bin/'
+  simsmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/learn/pairwise_matches_bin/'
   nmsTh = -1 # set = -1 for no NMS
 elif 0:
   # for full img matching case
@@ -123,6 +123,27 @@ elif 0:
   imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/lists/Images.txt'
   testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/lists/NdxesPeopleTest.txt'
   outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_top/fullImg_bow+gv.txt'
+  nmsTh = -1 # set = -1 for no NMS
+elif 0:
+  # for patch case
+  FULL_MATCH_WT = 1 # this x the score for full image
+  
+  use_similarity_selection = True
+  upto = 1
+  takeTopN = 5
+  param1 = -0.2
+  if takeTopN > 1:
+    NMATCHES_PER_PATCH = 50;
+
+  method = 'patch+full'
+  retrievallistpath =  '/home/rgirdhar/data/Work/Datasets/processed/0010_ExtendedPAL_moreTest/lists/NdxesTest.txt'
+  matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0010_ExtendedPAL_moreTest/matches_refined/CNN/test/'
+  fullmatchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0010_ExtendedPAL_moreTest/matches_refined/CNN/fullImg/'
+  imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0010_ExtendedPAL_moreTest/lists/Images.txt'
+  testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0010_ExtendedPAL_moreTest/lists/NdxesPeopleTest.txt'
+  outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0010_ExtendedPAL_moreTest/matches_top/test_final_deep.txt'
+  scoresdir = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/query_scores/CNN/test/'
+  simsmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/learn/pairwise_matches_bin/'
   nmsTh = -1 # set = -1 for no NMS
 elif 0:
   # for patch case
@@ -163,6 +184,16 @@ elif 0:
   imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/lists/Images.txt'
   testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/lists/NdxesPeopleTest.txt'
   outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_top/Jegou13_hesaff.txt'
+#  simsmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/learn/pairwise_matches_bin/'
+  nmsTh = -1 # set = -1 for no NMS
+elif 0:
+  # for full img matching case (Jegou - with hes aff features)
+  method = 'full-img'
+  matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0010_ExtendedPAL_moreTest/matches_refined/Jegou13/test/hmap_0.5'
+  retrievallistpath =  '/home/rgirdhar/data/Work/Datasets/processed/0010_ExtendedPAL_moreTest/lists/NdxesTest.txt'
+  imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0010_ExtendedPAL_moreTest/lists/Images.txt'
+  testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0010_ExtendedPAL_moreTest/lists/NdxesPeopleTest.txt'
+  outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0010_ExtendedPAL_moreTest/matches_top/Jegou13_hesaff.txt'
 #  simsmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/learn/pairwise_matches_bin/'
   nmsTh = -1 # set = -1 for no NMS
 elif 0:
@@ -472,7 +503,7 @@ def mergeRanklists(allmatches, retlist):
 # matches must be [(score, imid)...]
 def computeScores(matches, imgid, imgslist):
   # remove the exact match
-  matches2 = matches[:]
+  matches2 = matches[:] # make a copy
   sameornot = [m[1] == imgid for m in matches2]
   if sum(sameornot) > 0:
     del matches2[np.where(sameornot)[0][0]]
