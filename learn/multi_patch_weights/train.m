@@ -1,28 +1,36 @@
 function train()
 % read all data
-if 1
+if 0
   FEAT = 'fc7_PeopleOnly';
   FEATDIM = 4096;
-  RANDSAMPLE = 1000;
   addpath('bin/');
   featdir = ['/IUS/homes4/rohytg/work/data/002_ExtendedPAL/features/CNN/CNN_' FEAT '_mats'];
   scoresdir = '/IUS/homes4/rohytg/work/data/002_ExtendedPAL/matches_scores';
-  modelfpath = ['/IUS/homes4/rohytg/work/data/002_ExtendedPAL/models/model_' FEAT '.mat'];
   trainNdxesFpath = '/IUS/homes4/rohytg/work/data/002_ExtendedPAL/lists/NdxesPeopleTrain.txt';
   outcrossvalscores = '/IUS/homes4/rohytg/work/data/002_ExtendedPAL/learn/train_crossval_scores/';
   nfolds = 3;
+else
+  FEATDIM = 4096;
+  addpath('bin/');
+  featdir = '/IUS/vmr105/rohytg/data/005_ExtendedPAL2_moreTest/features/CNN/fc7_train/';
+  scoresdir = '/IUS/vmr105/rohytg/data/005_ExtendedPAL2_moreTest/matches_scores/Jegou13/train/';
+  trainNdxesFpath = '/IUS/vmr105/rohytg/data/005_ExtendedPAL2_moreTest/lists/NdxesPeopleTrain.txt';
+  imgslistfpath = '/IUS/vmr105/rohytg/data/005_ExtendedPAL2_moreTest/lists/Images.txt';
+  outcrossvalscores = '/IUS/vmr105/rohytg/data/005_ExtendedPAL2_moreTest/learn/train_crossval_scores/';
+  nfolds = 3;
 end
 
-trainNdxes = readList2(trainNdxesFpath);
+trainNdxes = readList(trainNdxesFpath, '%d');
+imgslist = readList(imgslistfpath, '%s');
 nTrainIdxs = numel(trainNdxes);
 
 allfeats = {};
 allscores = {};
 for i = trainNdxes(:)'
-  featFpath = fullfile(featdir, [num2str(i) '.mat']);
+  featFpath = fullfile(featdir, strrep(imgslist{i}, '.jpg', '.h5'));
   clear feats;
   try
-    load(featFpath, 'feats');
+    feats = double(h5read(featFpath, '/feats')');
     scores = dlmread(fullfile(scoresdir, [num2str(i) '.txt']));
   catch
     fprintf(2, 'Unable to read %s\n', featFpath);
@@ -85,9 +93,9 @@ for fold_i = 1 : numel(folds)
   end
 end
 
-function lst = readList2(fpath)
+function lst = readList(fpath, formatstr)
 f = fopen(fpath);
-lst = textscan(f, '%d');
+lst = textscan(f, formatstr);
 lst = lst{1};
 fclose(f);
 
