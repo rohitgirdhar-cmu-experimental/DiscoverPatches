@@ -20,13 +20,29 @@ elif 0:
   boxesdir = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/selsearch_boxes/'
   outdir = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_scores/train/'
   MIN_DIM_BOX = 0.05 # set score for any box smaller than MIN_DIM_BOX*IM_WID x MIN_DIM_BOX*IM_HT to 0
-elif 1:
+elif 0:
   datadir = '/home/rgirdhar/data/Work/Datasets/processed/0007_HussianHotels/corpus/'
   matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0007_HussianHotels/matches_refined/train/'
   imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0007_HussianHotels/lists/Images.txt'
   testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0007_HussianHotels/lists/NdxesTrain.txt'
   boxesdir = '/home/rgirdhar/data/Work/Datasets/processed/0007_HussianHotels/selsearch_boxes/'
   outdir = '/home/rgirdhar/data/Work/Datasets/processed/0007_HussianHotels/matches_scores/train/'
+  MIN_DIM_BOX = 0.05 # set score for any box smaller than MIN_DIM_BOX*IM_WID x MIN_DIM_BOX*IM_HT to 0
+elif 1:
+  datadir = '/home/rgirdhar/data/Work/Datasets/processed/0010_ExtendedPAL_moreTest/corpus_resized/'
+  matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0010_ExtendedPAL_moreTest/matches_refined/CNN/train/'
+  imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0010_ExtendedPAL_moreTest/lists/Images.txt'
+  testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0010_ExtendedPAL_moreTest/lists/NdxesPeopleTrain.txt'
+  boxesdir = '/home/rgirdhar/data/Work/Datasets/processed/0010_ExtendedPAL_moreTest/features/selsearch_boxes/'
+  outdir = '/home/rgirdhar/data/Work/Datasets/processed/0010_ExtendedPAL_moreTest/matches_scores/CNN/train/'
+  MIN_DIM_BOX = 0.05 # set score for any box smaller than MIN_DIM_BOX*IM_WID x MIN_DIM_BOX*IM_HT to 0
+elif 0:
+  datadir = '/home/rgirdhar/data/Work/Datasets/processed/0010_ExtendedPAL_moreTest/corpus_resized/'
+  matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0010_ExtendedPAL_moreTest/matches_refined/Jegou13/train/'
+  imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0010_ExtendedPAL_moreTest/lists/Images.txt'
+  testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0010_ExtendedPAL_moreTest/lists/NdxesPeopleTrain.txt'
+  boxesdir = '/home/rgirdhar/data/Work/Datasets/processed/0010_ExtendedPAL_moreTest/features/selsearch_boxes/'
+  outdir = '/home/rgirdhar/data/Work/Datasets/processed/0010_ExtendedPAL_moreTest/matches_scores/Jegou13/train/'
   MIN_DIM_BOX = 0.05 # set score for any box smaller than MIN_DIM_BOX*IM_WID x MIN_DIM_BOX*IM_HT to 0
 
 
