@@ -6,6 +6,7 @@ import os, sys, math, subprocess, random
 import numpy as np
 sys.path.append('../')
 from computeScores_DCG import computeDCG
+from computeAP import computeAP
 from nms import non_max_suppression_fast
 sys.path.append('../learn/multi_patch_weights/')
 from selectPatches import selectPatches
@@ -46,7 +47,7 @@ elif 0:
   outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_top/fullImg.txt'
   simsmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/learn/pairwise_matches_bin/'
   nmsTh = -1 # set = -1 for no NMS
-elif 0:
+elif 1:
   # for full img matching case
   method = 'full-img'
   matchesdir = '/home/rgirdhar/data/Work/Datasets/processed/0010_ExtendedPAL_moreTest/matches/CNN/fullImg/'
@@ -73,7 +74,7 @@ elif 0:
   scoresdir = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/query_scores/fc7_PeopleOnly/'
   simsmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/learn/pairwise_matches_bin/'
   nmsTh = -1 # set = -1 for no NMS
-elif 1:
+elif 0:
   # for patch case
   method = 'patch'
   use_similarity_selection = True
@@ -345,7 +346,7 @@ def main():
     retlist = [int(t) for t in f.read().splitlines()]
 
   fout = open(outfpath, 'w')
-  allscores = np.zeros((1, 8))
+  allscores = np.zeros((1, 9))
   allscores_cls = {} # same as allscores, except separately for each cls
   numdists_cls = {}
   for i in testlist:
@@ -396,7 +397,8 @@ def main():
     
     matches = randomSortZeroScores(matches)
 
-    scores = computeScores(matches, i, imgslist)
+    retlist_classes = [getClass(retel - 1, imgslist) for retel in retlist]
+    scores = computeScores(matches, i, imgslist, retlist_classes)
     allscores += np.array(scores)
     # also add these scores to class specific lists as well
     testcls = getClass(i - 1, imgslist)
@@ -420,7 +422,7 @@ def main():
             ','.join([str(el) for el in match[2]])))
     fout.write('\n')
   fout.close()
-  print 'mp1,mp3,mp5,mp10,mp20,atleast1/3,atleast1/10,DCG/10'
+  print 'mp1,mp3,mp5,mp10,mp20,atleast1/3,atleast1/10,DCG/10,mAP'
   print ','.join([str(s) for s in list(allscores / len(testlist))[0]])
   # print for each class
   classes = allscores_cls.keys()
@@ -501,7 +503,7 @@ def mergeRanklists(allmatches, retlist):
   return res
 
 # matches must be [(score, imid)...]
-def computeScores(matches, imgid, imgslist):
+def computeScores(matches, imgid, imgslist, retlist_classes = None):
   # remove the exact match
   matches2 = matches[:] # make a copy
   sameornot = [m[1] == imgid for m in matches2]
@@ -517,6 +519,15 @@ def computeScores(matches, imgid, imgslist):
   scores.append(sum(hits[:3]) > 0) # for atleast 1/3
   scores.append(sum(hits[:10]) > 0)
   scores.append(computeDCG(hits[:10], 10))
+  if retlist_classes:
+    hits2 = hits[:]
+    if sum(sameornot) > 0:
+      hits2.insert(np.where(sameornot)[0][0], cls)
+    assert(len(hits2) == len(retlist_classes))
+    poscount = sum([cls == retel_cls for retel_cls in retlist_classes])
+    scores.append(computeAP(hits2, poscount))
+  else:
+    scpres.append(0) # for AP
   return scores
 
 # matches must be [(score, imid)...]
