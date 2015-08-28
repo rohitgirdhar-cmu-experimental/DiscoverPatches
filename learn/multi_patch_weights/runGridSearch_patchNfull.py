@@ -7,19 +7,33 @@ from selectPatches import selectPatches
 sys.path.append('/srv2/rgirdhar/Work/Code/0003_DiscoverPatches/DiscoverPatches/quant/')
 from computeTopMatches import readMatchesWithFull
 
-imgslistpath = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/lists/Images.txt'
-simmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/learn/pairwise_matches_bin/'
-scoresdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/learn/train_crossval_scores_bin/'
-trainidxs = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/lists/NdxesPeopleTrain.txt'
-matchesdir = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/matches/train/'
-fullmatchesdir = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/matches/fullImg_train/'
-N = 1;
+if 0:
+  imgslistpath = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/lists/Images.txt'
+  simmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/learn/pairwise_matches_bin/'
+  scoresdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/learn/train_crossval_scores_bin/'
+  trainidxs = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/lists/NdxesPeopleTrain.txt'
+  matchesdir = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/matches/train/'
+  fullmatchesdir = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/matches/fullImg_train/'
+  retrievallistpath =  '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/lists/NdxesTrain.txt'
+else:
+  imgslistpath = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/lists/Images.txt'
+  simmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/learn/pairwise_matches_bin/'
+  scoresdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/learn/train_crossval_scores_bin/'
+  trainidxs = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/lists/NdxesPeopleTrain.txt'
+  matchesdir = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/matches/CNN/train/'
+  fullmatchesdir = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/matches/CNN/fullImg_trainNoNeg/'
+  retrievallistpath =  '/home/rgirdhar/data/Work/Datasets/processed/0010_ExtendedPAL_moreTest/lists/NdxesTrain_noNeg.txt'
+
+N = 5
+param1 = -0.2
 MAXBOXPERIMG = 10000
 
 with open(imgslistpath) as f:
   imgslist = f.read().splitlines()
 with open(trainidxs) as f:
   testlist = [int(t) for t in f.read().splitlines()]
+with open(retrievallistpath) as f:
+  retlist = [int(t) for t in f.read().splitlines()]
 
 def main():
   maxscore = -1
@@ -35,13 +49,13 @@ def evalParamValue(params):
     patchscores = readHDF5(os.path.join(scoresdir_bin, str(i) + '.h5'), 'scores')
     noMatchesList = getNoMatchesExistList(matchesdir, i) # returns 0 indexed
 
-    selected,selscores = selectPatches(patchscores, sims, 0, N, noMatchesList)
+    selected,selscores = selectPatches(patchscores, sims, param1, N, noMatchesList)
 
     pi = 0
     for param in params:
 
       # get the top matches from each and intersection
-      matches = readMatchesWithFull(matchesdir, fullmatchesdir, i, selected, param)
+      matches = readMatchesWithFull(matchesdir, fullmatchesdir, i, selected, param, retlist)
       score = computeScoresDCG_wrapper(matches, i, imgslist)
       #score = computeScoresMP3_wrapper(matches, i, imgslist)
       tot[pi] += score # the DCG

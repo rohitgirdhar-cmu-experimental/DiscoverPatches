@@ -77,7 +77,7 @@ elif 0:
   imgslistfile = '/srv2/rgirdhar/Work/Datasets/processed/0008_OxBuildings/lists/Images.txt'
   testimgidxsfile = '/srv2/rgirdhar/Work/Datasets/processed/0008_OxBuildings/lists/NdxesTest.txt'
   vis = True
-elif 1:
+elif 0:
   heatmapdir = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/scores_heatmap/CNN/test/full/'
   outdir = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/scores_heatmap/CNN/test/small/'
   visdir = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/scores_heatmap/CNN/test/vis/'
@@ -97,6 +97,14 @@ elif 0:
   heatmapdir = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/scores_heatmap/CNN/train/full/'
   outdir = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/scores_heatmap/CNN/train/small/'
   visdir = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/scores_heatmap/CNN/train/vis/'
+  imgsdir = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/corpus_resized/'
+  imgslistfile = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/lists/Images.txt'
+  testimgidxsfile = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/lists/NdxesPeopleTrain.txt'
+  vis = True
+elif 1:
+  heatmapdir = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/scores_heatmap/CNN/crossval_train_n10/full/'
+  outdir = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/scores_heatmap/CNN/crossval_train_n10/small/'
+  visdir = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/scores_heatmap/CNN/crossval_train_n10/vis/'
   imgsdir = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/corpus_resized/'
   imgslistfile = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/lists/Images.txt'
   testimgidxsfile = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/lists/NdxesPeopleTrain.txt'
