@@ -7,7 +7,7 @@ import numpy as np
 sys.path.append('../')
 from computeScores_DCG import computeDCG
 from computeAP import computeAP
-from nms import non_max_suppression_fast
+#from nms import non_max_suppression_fast
 sys.path.append('../learn/multi_patch_weights/')
 from selectPatches import selectPatches
 import h5py
@@ -205,6 +205,26 @@ elif 0:
   imgslistpath = '/home/rgirdhar/data/Work/Datasets/processed/0010_ExtendedPAL_moreTest/lists/Images.txt'
   testlistpath = '/home/rgirdhar/data/Work/Datasets/processed/0010_ExtendedPAL_moreTest/lists/NdxesPeopleTrain.txt'
   outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0010_ExtendedPAL_moreTest/matches_top/train.txt.temp'
+#  simsmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/learn/pairwise_matches_bin/'
+  nmsTh = -1 # set = -1 for no NMS
+elif 0:
+  # for full img matching case (Jegou - with hes aff features) <same as above, but for shona>
+  method = 'full-img'
+  matchesdir = '/IUS/homes4/rohytg/work/data/008_ExtendedPAL2_moreTest/cachedir/Jegou13/matches/hmap_faceheatmap2_0.1'
+  retrievallistpath =  '/IUS/homes4/rohytg/work/data/008_ExtendedPAL2_moreTest/lists/NdxesTest.txt'
+  imgslistpath = '/IUS/homes4/rohytg/work/data/008_ExtendedPAL2_moreTest/lists/Images.txt'
+  testlistpath = '/IUS/homes4/rohytg/work/data/008_ExtendedPAL2_moreTest/lists/NdxesPeopleTest.txt'
+  outfpath = '/IUS/homes4/rohytg/work/data/008_ExtendedPAL2_moreTest/matches_top/Jegou13_hesaff.txt'
+#  simsmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/learn/pairwise_matches_bin/'
+  nmsTh = -1 # set = -1 for no NMS
+elif 1:
+  # for full img matching MOPCNN, but for shona
+  method = 'full-img'
+  matchesdir = '/IUS/vmr105/rohytg/data/005_ExtendedPAL2_moreTest/baselines/001_MOPCNN/matches/fullImg_mopcnn/'
+  retrievallistpath =  '/IUS/homes4/rohytg/work/data/008_ExtendedPAL2_moreTest/lists/NdxesTest.txt'
+  imgslistpath = '/IUS/homes4/rohytg/work/data/008_ExtendedPAL2_moreTest/lists/Images.txt'
+  testlistpath = '/IUS/homes4/rohytg/work/data/008_ExtendedPAL2_moreTest/lists/NdxesPeopleTest.txt'
+  outfpath = '/IUS/homes4/rohytg/work/data/008_ExtendedPAL2_moreTest/matches_top/mop-cnn.txt'
 #  simsmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/learn/pairwise_matches_bin/'
   nmsTh = -1 # set = -1 for no NMS
 elif 0:
@@ -539,7 +559,7 @@ def computeScores(matches, imgid, imgslist, retlist_classes = None):
     poscount = sum([cls == retel_cls for retel_cls in retlist_classes])
     scores.append(computeAP(hits2, poscount))
   else:
-    scpres.append(0) # for AP
+    scores.append(0) # for AP
   return scores
 
 # matches must be [(score, imid)...]
@@ -598,8 +618,10 @@ def randomSortZeroScores(matches):
   random.seed(1)
   actual_matches = [el for el in matches if el[0] > 0]
   other_matches = [el for el in matches if el[0] == 0]
+  neg_matches = [el for el in matches if el[0] < 0] # in some random cases!
   random.shuffle(other_matches)
   actual_matches += other_matches
+  actual_matches += neg_matches
   return actual_matches
 
 if __name__ == '__main__':
