@@ -127,11 +127,11 @@ elif 0:
   nmsTh = -1 # set = -1 for no NMS
 elif 1:
   # for patch case
-  FULL_MATCH_WT = 0 # this x the score for full image
+  FULL_MATCH_WT = 1 # this x the score for full image
   
-  use_similarity_selection = False
+  use_similarity_selection = True
   upto = 1
-  takeTopN = -5
+  takeTopN = 5
   param1 = -0.4
   if takeTopN > 1:
     NMATCHES_PER_PATCH = 50;
