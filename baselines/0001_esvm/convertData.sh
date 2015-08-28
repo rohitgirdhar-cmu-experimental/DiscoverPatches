@@ -1,5 +1,5 @@
 corpusdir=/IUS/homes4/rohytg/work/data/002_ExtendedPAL/corpus/
-newcorpusdir=/IUS/homes4/rohytg/work/data/002_ExtendedPAL/corpus_mods/esvm/
+newcorpusdir=/IUS/homes4/rohytg/work/data/002_ExtendedPAL/corpus_mods2/esvm/
 
 array=()
 # Read the file in parameter and fill the array named "array"
@@ -24,5 +24,11 @@ mkdir -p $newcorpusdir/test/
 while read line; do
   ln -s $corpusdir/${array[$(($line-1))]} $newcorpusdir/test/$line.jpg
 done < /IUS/homes4/rohytg/work/data/002_ExtendedPAL/lists/NdxesTest.txt
+
+mkdir -p $newcorpusdir/testPeopleOnly/
+while read line; do
+  ln -s $corpusdir/${array[$(($line-1))]} $newcorpusdir/testPeopleOnly/$line.jpg
+done < /IUS/homes4/rohytg/work/data/002_ExtendedPAL/lists/NdxesPeopleTest.txt
+
 
 

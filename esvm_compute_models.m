@@ -7,10 +7,10 @@ if ~exist('masksdir', 'var')
 %  masksdir = '/IUS/vmr105/rohytg/projects/003_SelfieSeg/009_BgMatch/dataset/PeopleAtLandmarks/masks'
 end
 if ~exist('imgsdir', 'var')
-  imgsdir = '/IUS/homes4/rohytg/work/data/002_ExtendedPAL/corpus_mods/esvm/test/'
+  imgsdir = '/IUS/homes4/rohytg/work/data/002_ExtendedPAL/corpus_mods2/esvm/testPeopleOnly/'
 end
 if ~exist('outdir', 'var')
-  outdir = '/IUS/homes4/rohytg/work/data/002_ExtendedPAL/features/ESVM/test/'
+  outdir = '/IUS/homes4/rohytg/work/data/002_ExtendedPAL/features/ESVM/testPeopleOnly/'
 end
 all_imgs = getAllFiles(imgsdir);
 

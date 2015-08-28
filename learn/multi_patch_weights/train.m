@@ -1,9 +1,9 @@
 function train()
 % read all data
+addpath('bin/');
 if 0
   FEAT = 'fc7_PeopleOnly';
   FEATDIM = 4096;
-  addpath('bin/');
   featdir = ['/IUS/homes4/rohytg/work/data/002_ExtendedPAL/features/CNN/CNN_' FEAT '_mats'];
   scoresdir = '/IUS/homes4/rohytg/work/data/002_ExtendedPAL/matches_scores';
   trainNdxesFpath = '/IUS/homes4/rohytg/work/data/002_ExtendedPAL/lists/NdxesPeopleTrain.txt';
@@ -11,13 +11,12 @@ if 0
   nfolds = 3;
 else
   FEATDIM = 4096;
-  addpath('bin/');
   featdir = '/IUS/vmr105/rohytg/data/005_ExtendedPAL2_moreTest/features/CNN/fc7_train/';
   scoresdir = '/IUS/vmr105/rohytg/data/005_ExtendedPAL2_moreTest/matches_scores/Jegou13/train/';
   trainNdxesFpath = '/IUS/vmr105/rohytg/data/005_ExtendedPAL2_moreTest/lists/NdxesPeopleTrain.txt';
   imgslistfpath = '/IUS/vmr105/rohytg/data/005_ExtendedPAL2_moreTest/lists/Images.txt';
-  outcrossvalscores = '/IUS/vmr105/rohytg/data/005_ExtendedPAL2_moreTest/learn/train_crossval_scores/';
-  nfolds = 3;
+  outcrossvalscores = '/IUS/vmr105/rohytg/data/005_ExtendedPAL2_moreTest/learn/train_crossval_scores_n20/';
+  nfolds = 20;
 end
 
 trainNdxes = readList(trainNdxesFpath, '%d');

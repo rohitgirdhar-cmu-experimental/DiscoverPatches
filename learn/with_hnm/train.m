@@ -32,7 +32,7 @@ elseif 0
   scoresdir = '/IUS/homes4/rohytg/work/data/003_HussianHotels/matches_scores/train/';
   modelfpath = ['/IUS/homes4/rohytg/work/data/003_HussianHotels/models/model_' FEAT '.mat'];
   trainNdxesFpath = '/IUS/homes4/rohytg/work/data/003_HussianHotels/lists/NdxesPeopleTrain+.txt';
-elseif 0
+elseif 1
   feat_file_type = 'h5';
   feat_file_naming = 'imname';
   FEAT = 'fc7';
@@ -44,7 +44,7 @@ elseif 0
   modelfpath = ['/IUS/vmr105/rohytg/data/005_ExtendedPAL2_moreTest/models/model_fc7_cnnScoring.mat'];
   trainNdxesFpath = '/IUS/vmr105/rohytg/data/005_ExtendedPAL2_moreTest/lists/NdxesPeopleTrain.txt';
   imgslistfpath = '/IUS/vmr105/rohytg/data/005_ExtendedPAL2_moreTest/lists/Images.txt';
-elseif 1
+elseif 0
   feat_file_type = 'h5';
   feat_file_naming = 'imname';
   FEAT = 'fc7';

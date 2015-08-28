@@ -1,7 +1,7 @@
-outdir = '/IUS/homes4/rohytg/work/data/002_ExtendedPAL/scores_heatmap/human/';
-testidxfpath = '/IUS/homes4/rohytg/work/data/002_ExtendedPAL/lists/NdxesPeopleTest.txt';
-imgsdir = '/IUS/homes4/rohytg/work/data/002_ExtendedPAL/corpus/';
-imgslistfpath = '/IUS/homes4/rohytg/work/data/002_ExtendedPAL/lists/Images.txt';
+outdir = '/IUS/homes4/rohytg/work/data/008_ExtendedPAL2_moreTest/scores_heatmap/baselines/human/';
+testidxfpath = '/IUS/homes4/rohytg/work/data/008_ExtendedPAL2_moreTest/lists/NdxesPeopleTest.txt';
+imgsdir = '/IUS/homes4/rohytg/work/data/008_ExtendedPAL2_moreTest/corpus_resized/';
+imgslistfpath = '/IUS/homes4/rohytg/work/data/008_ExtendedPAL2_moreTest/lists/Images.txt';
 unix(['mkdir -p ' outdir]);
 
 f = fopen(imgslistfpath);
@@ -25,7 +25,7 @@ for tid = testidx(:)'
   imshow(I);
   rect = getrect(f);
   T = zeros(size(I, 1), size(I, 2));
-  T(rect(2) : rect(2) + rect(4), rect(1) : rect(1) + rect(3)) = 1;
+  T(max(rect(2), 0) : min(rect(2) + rect(4), size(I, 1)), max(rect(1), 0) : min(rect(1) + rect(3), size(I, 2))) = 1;
   dlmwrite(outfpath, T);
 end
 
