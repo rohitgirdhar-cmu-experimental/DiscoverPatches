@@ -53,6 +53,15 @@ elif 0:
   testimgidxsfile = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/lists/NdxesPeopleTest.txt'
   vis = True
   delim = ','
+elif 1:
+  heatmapdir = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/scores_heatmap/esvm/full'
+  outdir = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/scores_heatmap/esvm/small/'
+  visdir = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/scores_heatmap/esvm/vis/'
+  imgsdir = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/corpus/'
+  imgslistfile = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/lists/Images.txt'
+  testimgidxsfile = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/lists/NdxesPeopleTest.txt'
+  vis = True
+  delim = ','
 elif 0:
   heatmapdir = '/srv2/rgirdhar/Work/Datasets/processed/0007_HussianHotels/scores_heatmap/train/full'
   outdir = '/srv2/rgirdhar/Work/Datasets/processed/0007_HussianHotels/scores_heatmap/train/small/'
@@ -101,7 +110,7 @@ elif 0:
   imgslistfile = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/lists/Images.txt'
   testimgidxsfile = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/lists/NdxesPeopleTrain.txt'
   vis = True
-elif 1:
+elif 0:
   heatmapdir = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/scores_heatmap/CNN/crossval_train_n10/full/'
   outdir = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/scores_heatmap/CNN/crossval_train_n10/small/'
   visdir = '/srv2/rgirdhar/Work/Datasets/processed/0010_ExtendedPAL_moreTest/scores_heatmap/CNN/crossval_train_n10/vis/'
@@ -122,6 +131,7 @@ for i in testimgidxs:
   if vis:
     I = scipy.misc.imread(os.path.join(imgsdir, imgslist[i - 1]), flatten=1)
     sz = (hmap_orig.shape[0], hmap_orig.shape[1])
+    hmap_orig = np.square(hmap_orig)
     hmap = (hmap_orig * 1.0 / np.max(hmap_orig)) * 255.0
     try:
       R = 0.2 * np.dstack((I,I,I)) + 0.8 * np.dstack((hmap, np.zeros(sz), np.zeros(sz)))
