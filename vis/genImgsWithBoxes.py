@@ -13,7 +13,7 @@ import math
 
 def drawBoxes(I, boxes):
   for i in range(np.shape(boxes)[0]):
-    cv2.rectangle(I, (int(math.ceil(boxes[i][1])), int(math.ceil(boxes[i][0]))), (int(math.floor(boxes[i][3])), int(math.floor(boxes[i][2]))), (255,0,0), 2)
+    cv2.rectangle(I, (int(math.ceil(boxes[i][1])), int(math.ceil(boxes[i][0]))), (int(math.floor(boxes[i][3])), int(math.floor(boxes[i][2]))), (0,0,255), 3)
 
 with open(imgslistfpath) as f:
   imgslist = f.read().splitlines()
