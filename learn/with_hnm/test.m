@@ -18,7 +18,7 @@ elseif 0
   imgslistfile = '~/work/data/003_HussianHotels/lists/Images.txt';
   modelpath = ['/IUS/homes4/rohytg/work/data/003_HussianHotels/models/model_' FEAT '.mat'];
   testimgidspath = '/IUS/homes4/rohytg/work/data/003_HussianHotels/lists/NdxesTest.txt';
-elseif 1
+elseif 0
   feat_file_type = 'txt';
   FEAT = 'fc7';
   featdir = ['~/work/data/004_OxBuildings/features/CNN_' FEAT];
@@ -43,6 +43,26 @@ elseif 0
   modelpath = ['/IUS/vmr105/rohytg/data/005_ExtendedPAL2_moreTest/models/model_fc7_cnnScoring.mat'];
 %  modelpath = ['/IUS/vmr105/rohytg/data/005_ExtendedPAL2_moreTest/models/model_fc7_Jegou13Scoring.mat'];
   testimgidspath = '/IUS/vmr105/rohytg/data/005_ExtendedPAL2_moreTest/lists/NdxesPeopleTest.txt';
+  feat_file_type = 'hdf5';
+elseif 0
+  %% TODO: generate the selboxes and ext feats
+  featdir = ['/IUS/vmr105/rohytg/data/006_TVShows/Scratch/005_CNNMatching/Features/fc7_windows_normed_HDF5'];
+  outdir = ['/IUS/vmr105/rohytg/data/006_TVShows/Scratch/003_RegionScoring/001_Fc7Scores/'];
+%  outdir = ['/IUS/vmr105/rohytg/data/005_ExtendedPAL2_moreTest/query_scores/Jegou13/test/'];
+  imgslistfile = '/IUS/vmr105/rohytg/data/006_TVShows/Lists/Frames.txt';
+  modelpath = ['/IUS/vmr105/rohytg/data/005_ExtendedPAL2_moreTest/models/model_fc7_cnnScoring.mat'];
+%  modelpath = ['/IUS/vmr105/rohytg/data/005_ExtendedPAL2_moreTest/models/model_fc7_Jegou13Scoring.mat'];
+  testimgidspath = '/IUS/vmr105/rohytg/data/006_TVShows/Lists/NdxesAll.txt';
+  feat_file_type = 'hdf5';
+elseif 1
+  %% TODO: generate the selboxes and ext feats
+  featdir = ['/IUS/vmr105/rohytg/data/007_ExtendedPAL_forNatural/features/CNN/fc7_test/'];
+  outdir = ['/IUS/vmr105/rohytg/data/007_ExtendedPAL_forNatural/Scratch/002_RegionScoring/001_fc7Scores/'];
+%  outdir = ['/IUS/vmr105/rohytg/data/005_ExtendedPAL2_moreTest/query_scores/Jegou13/test/'];
+  imgslistfile = '/IUS/vmr105/rohytg/data/007_ExtendedPAL_forNatural/lists/Images.txt';
+  modelpath = ['/IUS/vmr105/rohytg/data/005_ExtendedPAL2_moreTest/models/model_fc7_cnnScoring.mat'];
+%  modelpath = ['/IUS/vmr105/rohytg/data/005_ExtendedPAL2_moreTest/models/model_fc7_Jegou13Scoring.mat'];
+  testimgidspath = '/IUS/vmr105/rohytg/data/007_ExtendedPAL_forNatural/lists/NdxesAll.txt';
   feat_file_type = 'hdf5';
 end
 
