@@ -375,13 +375,13 @@ elif 0:
   outfpath = '/srv2/rgirdhar/Work/Datasets/processed/0015_ExtendedPAL_forNatural/matches_top/Jegou13_hesaff_hmap0.3.txt'
 #  simsmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/learn/pairwise_matches_bin/'
   nmsTh = -1 # set = -1 for no NMS
-elif 1:
+elif 0:
   # for patch case
   FULL_MATCH_WT = 1 # this x the score for full image
   
   use_similarity_selection = True
   upto = 1
-  takeTopN = 1
+  takeTopN = 5
   param1 = -0.4
   if takeTopN > 1:
     NMATCHES_PER_PATCH = 50;
@@ -396,6 +396,16 @@ elif 1:
   outfpath = '/srv2/rgirdhar/Work/Datasets/processed/0015_ExtendedPAL_forNatural/matches_top/test_final_patch_1xfull.txt'
   scoresdir = '/srv2/rgirdhar/Work/Datasets/processed/0015_ExtendedPAL_forNatural/Scratch/002_RegionScoring/001_fc7Scores/'
   simsmatdir = '/srv2/rgirdhar/Work/Datasets/processed/0015_ExtendedPAL_forNatural/Scratch/003_CNNMatches/pairwise_matches/'
+  nmsTh = -1 # set = -1 for no NMS
+elif 1:
+  # for full img matching case
+  method = 'full-img'
+  matchesdir = '/srv2/rgirdhar/Work/Datasets/processed/0015_ExtendedPAL_forNatural/Scratch/003_CNNMatches/fullImg/'
+  retrievallistpath =  '/srv2/rgirdhar/Work/Datasets/processed/0015_ExtendedPAL_forNatural/lists/NdxesAll.txt'
+  imgslistpath = '/srv2/rgirdhar/Work/Datasets/processed/0015_ExtendedPAL_forNatural/lists/Images.txt'
+  testlistpath = '/srv2/rgirdhar/Work/Datasets/processed/0015_ExtendedPAL_forNatural/lists/NdxesTest.txt'
+  outfpath = '/srv2/rgirdhar/Work/Datasets/processed/0015_ExtendedPAL_forNatural/matches_top/test_final_full.txt'
+#  simsmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/learn/pairwise_matches_bin/'
   nmsTh = -1 # set = -1 for no NMS
 
 
