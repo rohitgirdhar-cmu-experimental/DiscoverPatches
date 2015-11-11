@@ -311,13 +311,13 @@ elif 0:
   outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/matches_top/fullImg.txt'
   #simsmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0008_OxBuildings/learn/pairwise_matches_bin/'
   nmsTh = -1 # set = -1 for no NMS
-elif 0:
+elif 1:
   # for full img matching case
 
   use_similarity_selection = True
   upto = 1
   takeTopN = 50
-  param1 = -0.2
+  param1 = -0.4 ## IMP: The prev numbers are with -0.2. It gets better with -0.4, but change it later on.
   if takeTopN > 1:
     NMATCHES_PER_PATCH = 50;
 
@@ -397,7 +397,7 @@ elif 0:
   scoresdir = '/srv2/rgirdhar/Work/Datasets/processed/0015_ExtendedPAL_forNatural/Scratch/002_RegionScoring/001_fc7Scores/'
   simsmatdir = '/srv2/rgirdhar/Work/Datasets/processed/0015_ExtendedPAL_forNatural/Scratch/003_CNNMatches/pairwise_matches/'
   nmsTh = -1 # set = -1 for no NMS
-elif 1:
+elif 0:
   # for full img matching case
   method = 'full-img'
   matchesdir = '/srv2/rgirdhar/Work/Datasets/processed/0015_ExtendedPAL_forNatural/Scratch/003_CNNMatches/fullImg/'
