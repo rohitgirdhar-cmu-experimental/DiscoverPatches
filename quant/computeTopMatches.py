@@ -311,7 +311,7 @@ elif 0:
   outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0008_OxBuildings/matches_top/fullImg.txt'
   #simsmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0008_OxBuildings/learn/pairwise_matches_bin/'
   nmsTh = -1 # set = -1 for no NMS
-elif 1:
+elif 0:
   # for full img matching case
 
   use_similarity_selection = True
@@ -365,14 +365,14 @@ elif 0:
   outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0006_ExtendedPAL/matches_top/Jegou13_hesaff_heatmap.txt'
   simsmatdir = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/learn/pairwise_matches/'
   nmsTh = -1 # set = -1 for no NMS
-elif 0:
+elif 1:
   # for full img matching case (Jegou - with hes aff features)
   method = 'full-img'
-  matchesdir = '/srv2/rgirdhar/Work/Datasets/processed/0015_ExtendedPAL_forNatural/Scratch/001_Jegou13/matches/hmap_0.3/'
+  matchesdir = '/srv2/rgirdhar/Work/Datasets/processed/0015_ExtendedPAL_forNatural/Scratch/001_Jegou13/matches/hmap_0.0/'
   retrievallistpath =  '/srv2/rgirdhar/Work/Datasets/processed/0015_ExtendedPAL_forNatural/lists/NdxesAll.txt'
   imgslistpath = '/srv2/rgirdhar/Work/Datasets/processed/0015_ExtendedPAL_forNatural/lists/Images.txt'
-  testlistpath = '/srv2/rgirdhar/Work/Datasets/processed/0015_ExtendedPAL_forNatural/lists/NdxesTest.txt'
-  outfpath = '/srv2/rgirdhar/Work/Datasets/processed/0015_ExtendedPAL_forNatural/matches_top/Jegou13_hesaff_hmap0.3.txt'
+  testlistpath = '/srv2/rgirdhar/Work/Datasets/processed/0015_ExtendedPAL_forNatural/lists/NdxesTest2.txt'
+  outfpath = '/srv2/rgirdhar/Work/Datasets/processed/0015_ExtendedPAL_forNatural/matches_top/Jegou13_hesaff_hmap0.0.txt'
 #  simsmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/learn/pairwise_matches_bin/'
   nmsTh = -1 # set = -1 for no NMS
 elif 0:
@@ -381,7 +381,7 @@ elif 0:
   
   use_similarity_selection = True
   upto = 1
-  takeTopN = 5
+  takeTopN = 0
   param1 = -0.4
   if takeTopN > 1:
     NMATCHES_PER_PATCH = 50;
@@ -391,7 +391,7 @@ elif 0:
   matchesdir = '/srv2/rgirdhar/Work/Datasets/processed/0015_ExtendedPAL_forNatural/Scratch/003_CNNMatches/refined/test/'
   fullmatchesdir = '/srv2/rgirdhar/Work/Datasets/processed/0015_ExtendedPAL_forNatural/Scratch/003_CNNMatches/fullImg/'
   imgslistpath = '/srv2/rgirdhar/Work/Datasets/processed/0015_ExtendedPAL_forNatural/lists/Images.txt'
-  testlistpath = '/srv2/rgirdhar/Work/Datasets/processed/0015_ExtendedPAL_forNatural/lists/NdxesTest.txt'
+  testlistpath = '/srv2/rgirdhar/Work/Datasets/processed/0015_ExtendedPAL_forNatural/lists/NdxesTest2.txt'
   #outfpath = '/home/rgirdhar/data/Work/Datasets/processed/0010_ExtendedPAL_moreTest/matches_top/test_final_patch_1xfull.txt'
   outfpath = '/srv2/rgirdhar/Work/Datasets/processed/0015_ExtendedPAL_forNatural/matches_top/test_final_patch_1xfull.txt'
   scoresdir = '/srv2/rgirdhar/Work/Datasets/processed/0015_ExtendedPAL_forNatural/Scratch/002_RegionScoring/001_fc7Scores/'
@@ -403,8 +403,8 @@ elif 0:
   matchesdir = '/srv2/rgirdhar/Work/Datasets/processed/0015_ExtendedPAL_forNatural/Scratch/003_CNNMatches/fullImg/'
   retrievallistpath =  '/srv2/rgirdhar/Work/Datasets/processed/0015_ExtendedPAL_forNatural/lists/NdxesAll.txt'
   imgslistpath = '/srv2/rgirdhar/Work/Datasets/processed/0015_ExtendedPAL_forNatural/lists/Images.txt'
-  testlistpath = '/srv2/rgirdhar/Work/Datasets/processed/0015_ExtendedPAL_forNatural/lists/NdxesTest.txt'
-  outfpath = '/srv2/rgirdhar/Work/Datasets/processed/0015_ExtendedPAL_forNatural/matches_top/test_final_full.txt'
+  testlistpath = '/srv2/rgirdhar/Work/Datasets/processed/0015_ExtendedPAL_forNatural/lists/NdxesTest2.txt'
+  outfpath = '/srv2/rgirdhar/Work/Datasets/processed/0015_ExtendedPAL_forNatural/matches_top/test_full.txt'
 #  simsmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/learn/pairwise_matches_bin/'
   nmsTh = -1 # set = -1 for no NMS
 
