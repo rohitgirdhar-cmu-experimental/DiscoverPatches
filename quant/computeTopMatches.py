@@ -368,11 +368,11 @@ elif 0:
 elif 1:
   # for full img matching case (Jegou - with hes aff features)
   method = 'full-img'
-  matchesdir = '/srv2/rgirdhar/Work/Datasets/processed/0015_ExtendedPAL_forNatural/Scratch/001_Jegou13/matches/hmap_0.0/'
+  matchesdir = '/srv2/rgirdhar/Work/Datasets/processed/0015_ExtendedPAL_forNatural/Scratch/001_Jegou13/matches/hmap_0.3/'
   retrievallistpath =  '/srv2/rgirdhar/Work/Datasets/processed/0015_ExtendedPAL_forNatural/lists/NdxesAll.txt'
   imgslistpath = '/srv2/rgirdhar/Work/Datasets/processed/0015_ExtendedPAL_forNatural/lists/Images.txt'
   testlistpath = '/srv2/rgirdhar/Work/Datasets/processed/0015_ExtendedPAL_forNatural/lists/NdxesTest2.txt'
-  outfpath = '/srv2/rgirdhar/Work/Datasets/processed/0015_ExtendedPAL_forNatural/matches_top/Jegou13_hesaff_hmap0.0.txt'
+  outfpath = '/srv2/rgirdhar/Work/Datasets/processed/0015_ExtendedPAL_forNatural/matches_top/Jegou13_hesaff_hmap0.3.txt'
 #  simsmatdir_bin = '/srv2/rgirdhar/Work/Datasets/processed/0006_ExtendedPAL/learn/pairwise_matches_bin/'
   nmsTh = -1 # set = -1 for no NMS
 elif 0:
@@ -381,7 +381,7 @@ elif 0:
   
   use_similarity_selection = True
   upto = 1
-  takeTopN = 0
+  takeTopN = 1
   param1 = -0.4
   if takeTopN > 1:
     NMATCHES_PER_PATCH = 50;
@@ -597,7 +597,7 @@ def computeScores(matches, imgid, imgslist, retlist_classes = None):
   if retlist_classes:
     hits2 = hits[:]
     if sum(sameornot) > 0:
-      hits2.insert(np.where(sameornot)[0][0], cls)
+      hits2.insert(np.where(sameornot)[0][0], True) # get back the exact match I removed earlier - it is used in mAP computation
     assert(len(hits2) == len(retlist_classes))
     poscount = sum([cls == retel_cls for retel_cls in retlist_classes])
     scores.append(computeAP(hits2, poscount))
